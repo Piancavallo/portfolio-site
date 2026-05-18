@@ -1,0 +1,37 @@
+---
+// src/pages/about.astro
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | Conner Myers" description="A little about me">
+  <h1 class="text-4xl font-bold tracking-tight">About</h1>
+  <div class="mt-8 grid gap-12 md:grid-cols-3">
+    <!-- Bio -->
+    <div class="md:col-span-2 space-y-4 text-gray-600 leading-relaxed">
+      <p>
+        Write a paragraph or two about yourself here. What do you do? What are you
+        passionate about? Where are you based?
+      </p>
+      <p>
+        A second paragraph — maybe about your background, how you got into your field,
+        or what you're currently exploring.
+      </p>
+    </div>
+
+    <!-- Quick facts sidebar -->
+    <aside class="space-y-4 text-sm text-gray-500">
+      <div>
+        <p class="font-semibold text-gray-900">Location</p>
+        <p>Your City, Country</p>
+      </div>
+      <div>
+        <p class="font-semibold text-gray-900">Currently</p>
+        <p>What you're doing now</p>
+      </div>
+      <div>
+        <p class="font-semibold text-gray-900">Interests</p>
+        <p>Thing one, thing two, thing three</p>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
