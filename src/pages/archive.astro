@@ -1,0 +1,737 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PortfolioMap from '@components/PortfolioMap';
+import HomePopout from '@components/home/HomePopout';
+import { buildLibraryBooks, NOTE_EXPAND_THRESHOLD } from '@data/libraryBooks';
+import { imagesFromGlob } from '../utils/loadImageAlbum';
+
+const libraryBooks = await buildLibraryBooks();
+
+const imageGlob = import.meta.glob<{ default: { src: string } }>(
+  '/src/images/{garden,work}/**/*.{jpg,jpeg,png,webp,gif,avif,JPEG}',
+  { eager: true }
+);
+
+const gardenImages = imagesFromGlob(imageGlob, '/src/images/garden/', 'Garden photo');
+const usafImages = imagesFromGlob(imageGlob, '/src/images/work/usaf/', 'USAF photo');
+const drippingSpringsImages = imagesFromGlob(imageGlob, '/src/images/work/dripping-springs/', 'Dripping Springs Garden photo');
+const caretakerImages = imagesFromGlob(imageGlob, '/src/images/work/caretaker/', 'Caretaker photo');
+const montereyAquariumImages = imagesFromGlob(imageGlob, '/src/images/work/monterey-aquarium/', 'Monterey Aquarium photo');
+
+const galleryPopouts = {
+  garden: {
+    title: 'Backyard Garden',
+    intro: 'Organic backyard garden, using what I learned from my farming sidequest.',
+    images: gardenImages,
+    emptyFolderHint: 'src/images/garden/',
+  },
+  usaf: {
+    title: 'USAF / MILSATCOM · 2017 – 2021',
+    intro: "In 2017 I enlisted in the United States Air Force, following in the footsteps of my dad. During my four-year term I traveled to California, Colorado and New Mexico to work on military satellite communications (MILSATCOM). There would be more pictures of my work here, but then I'd have to kill you... but you can see my full work history on LinkedIn.",
+    images: usafImages,
+    emptyFolderHint: 'src/images/work/usaf/',
+  },
+  'dripping-springs': {
+    title: 'Dripping Springs Garden',
+    intro: 'Placeholder — add your Dripping Springs Garden work experience here.',
+    images: drippingSpringsImages,
+    emptyFolderHint: 'src/images/work/dripping-springs/',
+  },
+  caretaker: {
+    title: 'Caretaker Role',
+    intro: 'Placeholder — add your caretaker role details here.',
+    images: caretakerImages,
+    emptyFolderHint: 'src/images/work/caretaker/',
+  },
+  'monterey-aquarium': {
+    title: 'Monterey Aquarium',
+    intro: 'Came here when we were living in Las Vegas. Pivotal moment of my life where I watched a scuba diver feeding the fish in the Monterey Bay Aquarium\'s kelp forest exhibit, and knew right then and there that I when I grow up I wanted to become a "fish feeder." Sadly as of the date of this writing that dream has not been fulfilled... yet.',
+    images: montereyAquariumImages,
+    emptyFolderHint: 'src/images/work/monterey-aquarium/',
+  },
+};
+
+const popoutContent = {
+  'tank-drivers-ed': {
+    title: "Tank Driver's Ed",
+    text: 'A Unity prototype that taught user controls, collision physics, and camera control.',
+    imageSrc: '/images/Unity Tank driving thumbnail.jpg',
+    playUrl: 'https://piancavallo.itch.io/unity-vehicle-demo',
+    playLabel: 'Play game →',
+  },
+  soccer: {
+    title: 'Soccer',
+    text: 'Another Unity prototype, try and stop the balls from going in your net!',
+    imageSrc: '/images/Soccer.jpg',
+    playUrl: 'https://piancavallo.itch.io/soccer',
+    playLabel: 'Play game →',
+  },
+};
+---
+
+<BaseLayout title="Archive | Conner Myers">
+  <div class="home-page design-c">
+    <div class="design-c__canopy" aria-hidden="true"></div>
+    <div class="design-c__trail" aria-hidden="true"></div>
+
+    <div class="design-c__shell">
+      <header class="design-c__hero">
+        <div class="design-c__hero-grid">
+          <div class="design-c__hero-copy">
+            <h1 class="design-c__name">Hi, I'm Conner</h1>
+            <div class="design-c__intro">
+              <p> I'm a 30 year old who just got his bachelor's degree in computer science and cybersecurity. Before that I volunteered on a farm in rural Arkansas (and lived in a barn, no joke). Before that, I unexpectedly found myself acting as a full-time caretaker for my mom after she had a severe stroke, which happened in the same week that I was finishing my four year enlistment in the Air Force. Funny timing, that. Suffice it to say, my life trajectory has been kinda all over the place. I made this page to try and organize it all together, as much for my sake as for anyone else's. Whether you're a friend I shared this with, or a family member, or a random person on the internet who's possibly considering employing me, welcome.</p>
+            </div>
+          </div>
+          <div class="design-c__portrait portrait-anchor">
+            <div class="design-c__portrait-frame">
+              <img src="/images/Me.jpg" alt="Conner Myers" width="150" height="150" />
+            </div>
+            <nav class="design-c__portrait-links" aria-label="Professional links">
+              <a
+                href="https://www.linkedin.com/in/conner-myers-0411481b1/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="design-c__portrait-link"
+                aria-label="LinkedIn profile"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2" aria-hidden="true">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+                <span class="portrait-link__hover-label" aria-hidden="true">LinkedIn</span>
+              </a>
+              <button
+                type="button"
+                class="design-c__portrait-link design-c__portrait-link--email"
+                data-email="conn0myers@gmail.com"
+                aria-label="Copy email address"
+              >
+                <span class="portrait-link__icon portrait-link__icon--default" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#4285F4" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                  </svg>
+                </span>
+                <span class="portrait-link__icon portrait-link__icon--copied" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d6b47" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="portrait-link__hover-label" aria-hidden="true">Copy email</span>
+                <span class="portrait-link__tooltip" aria-hidden="true">Copied!</span>
+              </button>
+              <a
+                href="/Conner_Myers_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="design-c__portrait-link"
+                aria-label="Open resume (PDF)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3d24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                <span class="portrait-link__hover-label" aria-hidden="true">Resume</span>
+              </a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main class="design-c__main home-main">
+        <div class="home-main__content">
+
+          <section class="design-c__waypoint home-map-row" aria-label="Life map">
+            <div class="design-c__waypoint-body">
+              <h2 class="design-c__section-title">Places I've Been</h2>
+              <p class="design-c__text">Having grown up in a military family, the timeline of my life is rather sporadic, so I made this interactive map as a means to organize and tell my story through photos. I couldn't have done it without the help of my mom who, over the years, was always telling us to "say cheese!" Looks pretty cool on a map, too. </p>
+              <div class="design-c__map-lift">
+                <div class="design-c__map-frame map-panel">
+                  <div class="map-panel__inner design-c__map-panel__inner">
+                    <div class="design-c__map-placeholder" aria-hidden="true">Loading map…</div>
+                    <PortfolioMap client:only="react" expandMode="modal" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="design-c__waypoint">
+            <div class="design-c__waypoint-body">
+              <h2 class="design-c__section-title">Jobs I've Done</h2>
+              <p class="design-c__text"> Almost as sporadic as my life trajectory is my job history. While the current job market may not understand or appreciate it, I'm thankful for the unique experiences and friendships that were made along the way. </p>
+              <div class="design-c__grid-2x2">
+                <button type="button" data-popout="usaf" class="design-c__card" style="--card-bg: url('/images/cards/usaf.jpg')">
+                  <span class="design-c__card-ribbon">USAF / MILSATCOM</span>
+                </button>
+                <button
+                  type="button"
+                  data-popout="dripping-springs"
+                  class="design-c__card"
+                  style="--card-bg: url('/images/cards/DSG.jpg')"
+                >
+                  <span class="design-c__card-ribbon">Dripping Springs Garden</span>
+                </button>
+                <button type="button" data-popout="caretaker" class="design-c__card" style="--card-bg: url('/images/cards/Caretaker.PNG')">
+                  <span class="design-c__card-ribbon">Caretaker Role</span>
+                </button>
+                <button
+                  type="button"
+                  data-popout="monterey-aquarium"
+                  class="design-c__card"
+                  style="--card-bg: url('/images/cards/MBA.jpg')"
+                >
+                  <span class="design-c__card-ribbon">Monterey Aquarium</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="design-c__waypoint design-c__waypoint--last">
+            <div class="design-c__waypoint-body">
+              <h2 class="design-c__section-title">Hobbies</h2>
+              <!-- <p class="design-c__text">In 2023 I lived and worked on an organic farm in north-western Arkansas, and that opened my eyes to gardening in a way that's stuck with me. 2026 is the second year I've tried growing stuff in the backyard. Also I read sometimes. </p> -->
+              <div class="design-c__grid-2x2">
+                <button type="button" data-popout="garden" class="design-c__card" style="--card-bg: url('/images/cards/garden.jpg')">
+                  <span class="design-c__card-ribbon">Backyard Garden</span>
+                </button>
+                <button type="button" data-popout="library" class="design-c__card" style="--card-bg: url('/images/cards/library.webp')">
+                  <span class="design-c__card-ribbon">Reading List</span>
+                </button>
+                <button type="button" data-popout="tank-drivers-ed" class="design-c__card" style="--card-bg: url('/images/Unity Tank driving thumbnail.jpg')">
+                  <span class="design-c__card-ribbon">Tank Driver's Ed</span>
+                </button>
+                <button type="button" data-popout="soccer" class="design-c__card" style="--card-bg: url('/images/Soccer.jpg')">
+                  <span class="design-c__card-ribbon">Soccer</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="design-c__contact-card">
+        <div class="design-c__contact-card-inner">
+          <h2 class="design-c__contact-title">Obligatory links:</h2>
+          <!-- <p class="design-c__contact-lead">Happy to chat about work, code, or what's growing in the garden.</p> -->
+          <nav class="design-c__contact-links" aria-label="Contact links">
+            <a
+              href="https://www.linkedin.com/in/conner-myers-0411481b1/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="design-c__portrait-link"
+              aria-label="LinkedIn profile"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              <span class="portrait-link__hover-label" aria-hidden="true">LinkedIn</span>
+            </a>
+            <button
+              type="button"
+              class="design-c__portrait-link design-c__portrait-link--email"
+              data-email="conn0myers@gmail.com"
+              aria-label="Copy email address"
+            >
+              <span class="portrait-link__icon portrait-link__icon--default" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#4285F4" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+              </span>
+              <span class="portrait-link__icon portrait-link__icon--copied" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d6b47" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <span class="portrait-link__hover-label" aria-hidden="true">Copy email</span>
+              <span class="portrait-link__tooltip" aria-hidden="true">Copied!</span>
+            </button>
+            <a
+              href="/Conner_Myers_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="design-c__portrait-link"
+              aria-label="Open resume (PDF)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3d24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              <span class="portrait-link__hover-label" aria-hidden="true">Resume</span>
+            </a>
+          </nav>
+        </div>
+        <div class="design-c__contact-meta">
+          <span>© {new Date().getFullYear()} Conner Myers</span>
+          <span class="design-c__contact-meta-dot" aria-hidden="true">·</span>
+          <span>Designed and developed by Conner Myers with <a href="https://astro.build/" target="_blank" rel="noopener noreferrer">Astro</a></span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <HomePopout
+    client:load
+    galleryPopouts={galleryPopouts}
+    simpleContent={popoutContent}
+    libraryBooks={libraryBooks}
+    libraryIntro="These are just off the top of my recent reading list. Over time I'd like to add more."
+    noteThreshold={NOTE_EXPAND_THRESHOLD}
+  />
+
+  <script>
+    document.querySelectorAll<HTMLButtonElement>('[data-email]').forEach((btn) => {
+      let copyFeedbackTimeout: ReturnType<typeof setTimeout> | null = null;
+      btn.addEventListener('click', async () => {
+        const email = btn.dataset.email;
+        if (!email) return;
+        await navigator.clipboard.writeText(email);
+        btn.classList.add('is-copied');
+        if (copyFeedbackTimeout) clearTimeout(copyFeedbackTimeout);
+        copyFeedbackTimeout = setTimeout(() => btn.classList.remove('is-copied'), 1250);
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-popout]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.popout;
+        if (id) {
+          window.dispatchEvent(new CustomEvent('home-popout:open', { detail: { id } }));
+        }
+      });
+    });
+  </script>
+
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700&display=swap');
+
+    html, body {
+      background: #e8e0d0 !important;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(74, 124, 89, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(139, 90, 43, 0.1) 0%, transparent 45%),
+        linear-gradient(175deg, #ebe4d4 0%, #ddd4c0 40%, #d4cbb5 100%) !important;
+      color: #2c3e2a !important;
+      font-family: 'Nunito', 'Segoe UI', sans-serif !important;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Fraunces', Georgia, serif !important;
+      color: #1e3d24 !important;
+      letter-spacing: 0.01em !important;
+    }
+  </style>
+
+  <style>
+    .design-c {
+      position: relative;
+      min-height: 100svh;
+      color: #2c3e2a;
+    }
+
+    .design-c__canopy {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 120% 40% at 50% -10%, rgba(45, 90, 55, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 30% at 10% 20%, rgba(74, 124, 89, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 25% at 90% 15%, rgba(74, 124, 89, 0.06) 0%, transparent 45%);
+    }
+
+    .design-c__trail {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q35 20 30 35 Q25 50 30 55' stroke='%232c5a32' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-size: 80px 80px;
+    }
+
+    .design-c__shell {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 2rem;
+    }
+
+    .design-c__hero,
+    .design-c__contact-card {
+      position: relative;
+      padding: 2rem 1.75rem;
+      background: linear-gradient(145deg, rgba(255, 252, 245, 0.92) 0%, rgba(245, 238, 220, 0.88) 100%);
+      border: 1px solid rgba(74, 103, 65, 0.2);
+      box-shadow: 0 8px 48px rgba(44, 62, 42, 0.35);
+    }
+
+    .design-c__hero {
+      margin-bottom: 2.5rem;
+      border-radius: 24px 24px 24px 24px;
+    }
+
+    .design-c__contact-card {
+      margin-top: 0.5rem;
+      border-radius: 24px 24px 24px 24px;
+    }
+
+    .design-c__contact-card-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .design-c__contact-title {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: #1e3d24;
+    }
+
+    .design-c__contact-lead {
+      margin: 0 0 1.25rem;
+      max-width: 28rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #3d4f3a;
+    }
+
+    .design-c__contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .design-c__contact-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.35rem 0.75rem;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px dashed rgba(74, 103, 65, 0.25);
+      font-size: 0.8rem;
+      color: #6b7d62;
+    }
+
+    .design-c__contact-meta a {
+      color: #3d6b47;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .design-c__contact-meta a:hover { text-decoration: underline; }
+
+    .design-c__hero-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 680px) {
+      .design-c__hero-grid { grid-template-columns: 1fr; }
+      .design-c__portrait { justify-self: center; }
+    }
+
+    .design-c__name {
+      margin: 0 0 1rem;
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: #1e3d24;
+    }
+
+    .design-c__intro p {
+      margin: 0 0 0.85rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #3d4f3a;
+    }
+
+    .design-c__intro a {
+      color: #2d5a3d;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(45, 90, 61, 0.4);
+    }
+
+    .design-c__intro a:hover { color: #8b5a2b; }
+
+    .design-c__portrait {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .design-c__portrait-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    .design-c__portrait-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      padding: 0;
+      border: 2px solid #c4b89a;
+      border-radius: 50%;
+      background: #fffdf8;
+      color: inherit;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(44, 62, 42, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .design-c__portrait-link:hover {
+      transform: translateY(-2px);
+      border-color: #4a7c59;
+      box-shadow: 0 4px 12px rgba(44, 62, 42, 0.15);
+    }
+
+    .portrait-link__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portrait-link__icon--copied {
+      display: none;
+    }
+
+    .design-c__portrait-link--email.is-copied .portrait-link__icon--default {
+      display: none;
+    }
+
+    .design-c__portrait-link--email.is-copied .portrait-link__icon--copied {
+      display: inline-flex;
+    }
+
+    .portrait-link__hover-label,
+    .portrait-link__tooltip {
+      position: absolute;
+      bottom: calc(100% + 0.35rem);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.2rem 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #f5f0e6;
+      background: #3d6b47;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .design-c__portrait-link:hover .portrait-link__hover-label,
+    .design-c__portrait-link:focus-visible .portrait-link__hover-label {
+      opacity: 1;
+    }
+
+    .design-c__portrait-link--email.is-copied .portrait-link__hover-label {
+      opacity: 0;
+    }
+
+    .design-c__portrait-link--email.is-copied .portrait-link__tooltip {
+      opacity: 1;
+    }
+
+    .design-c__portrait-frame {
+      padding: 6px;
+      border-radius: 10%;
+      background: linear-gradient(145deg, #6b8f5e 0%, #1e3d24 50%, #8b5a2b 100%);
+      box-shadow: 0 8px 24px rgba(44, 62, 42, 0.15);
+    }
+
+    .design-c__portrait-frame img {
+      display: block;
+      width: 9.375rem;
+      height: 9.375rem;
+      border-radius: 10%;
+      object-fit: cover;
+      border: 3px solid #f5f0e6;
+    }
+
+    .design-c__map-lift {
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .design-c__map-lift:hover {
+      transform: translateY(-4px);
+    }
+
+    .design-c__map-frame {
+      border-radius: 16px;
+      overflow: visible;
+      border: 3px solid #c4b89a;
+      background: #f5f0e6;
+      box-shadow: 0 8px 30px rgba(44, 62, 42, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .design-c__map-lift:hover .design-c__map-frame {
+      box-shadow: 0 12px 32px rgba(44, 62, 42, 0.18);
+    }
+
+    .design-c__map-panel__inner {
+      border-radius: 13px;
+      overflow: hidden;
+      position: relative;
+      height: calc((100cqw - 1rem) / 2);
+    }
+
+    .design-c__map-placeholder {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ebe4d4;
+      color: #6b7d62;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .design-c__map-panel__inner.map-ready .design-c__map-placeholder {
+      display: none;
+    }
+
+    .design-c__waypoint {
+      margin-bottom: 2rem;
+    }
+
+    .design-c__waypoint-body {
+      container-type: inline-size;
+    }
+
+    .design-c__section-title {
+      margin: 0 0 0.6rem;
+      font-size: clamp(1.25rem, 6vw, 2.5rem);
+      font-weight: 700;
+      color: #1e3d24;
+    }
+
+    .design-c__text {
+      margin: 0 0 1rem;
+      font-size: 0.975rem;
+      line-height: 1.7;
+      color: #3d4f3a;
+      max-width: 40rem;
+    }
+
+    .design-c__grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 520px) {
+      .design-c__grid-2x2 { grid-template-columns: 1fr; }
+    }
+
+    .design-c__card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: 100%;
+      aspect-ratio: 2/1;
+      padding: 1rem;
+      border: 3px solid #c4b89a;
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: left;
+      color: #fff;
+      font-family: inherit;
+      background: var(--card-bg) center / cover no-repeat;
+      background-color: #4a6741;
+      box-shadow: 0 6px 20px rgba(44, 62, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .design-c__card--placeholder {
+      --card-bg: linear-gradient(145deg, #6b8f5e 0%, #4a6741 50%, #3d5a42 100%);
+    }
+
+    .design-c__card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(44, 62, 42, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    }
+
+    .design-c__card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(30, 45, 28, 0.55) 0%, rgba(30, 45, 28, 0.08) 55%);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .design-c__card-ribbon {
+      position: absolute;
+      top: 0.85rem;
+      left: 0.85rem;
+      z-index: 2;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e3d24;
+      background: rgba(245, 240, 230, 0.93);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      pointer-events: none;
+    }
+
+    :global(.design-c__map-place-card) {
+      padding: 0.625rem 1rem;
+      background: linear-gradient(145deg, #fffcf5 0%, #f5eedc 100%);
+      border: 1px solid rgba(74, 103, 65, 0.35);
+      border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(44, 62, 42, 0.08);
+    }
+
+    :global(.design-c__map-place-card__title) {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #1e3d24;
+    }
+
+    :global(.design-c__map-place-card__years) {
+      margin: 0.15rem 0 0;
+      font-size: 0.75rem;
+      line-height: 1.35;
+      color: #3d4f3a;
+    }
+
+    :global(body.map-expanded) .map-panel,
+    :global(body.map-expanded) .map-panel__inner { overflow: visible; }
+
+    :global(body.map-modal-open) .design-c__map-lift {
+      transform: none;
+    }
+  </style>
+</BaseLayout>

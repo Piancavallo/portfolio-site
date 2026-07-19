@@ -1,0 +1,46 @@
+---
+import StateOutline from '@components/places/StateOutline.astro';
+import { getGeoOutline } from '@data/geoOutlines';
+import {
+  formatPlaceRegion,
+  formatYearRange,
+  getTimelineEntryKey,
+  type TimelineEntry,
+} from '@data/places';
+
+interface Props {
+  entry: TimelineEntry;
+}
+
+const { entry } = Astro.props;
+const { place, startYear, endYear } = entry;
+const albumId = getTimelineEntryKey(entry);
+const displayYears = formatYearRange(place.years ?? '', startYear, endYear);
+const regionLabel = formatPlaceRegion(place);
+const datetimeYear = startYear ?? undefined;
+const thumb = place.photos[0];
+const hasOutline = Boolean(getGeoOutline(place.geo));
+---
+
+<article>
+  <div class="timeline__content">
+    <h2 class="timeline__place">{regionLabel}</h2>
+    <time datetime={datetimeYear != null ? String(datetimeYear) : undefined}>{displayYears}</time>
+    {place.yearsNote && <p class="timeline__years-note">{place.yearsNote}</p>}
+    <hr />
+    <p>{place.narrative}</p>
+    <button type="button" class="timeline__album-btn" data-album-id={albumId}>
+      Open Album <span class="text-arrow" aria-hidden="true">→</span>
+    </button>
+  </div>
+  {(thumb || hasOutline) && (
+    <div class="timeline__media">
+      {hasOutline && (
+        <StateOutline geoKey={place.geo} label={place.name} />
+      )}
+      {thumb && (
+        <img src={thumb.src} alt={place.name} width="400" height="308" loading="lazy" decoding="async" />
+      )}
+    </div>
+  )}
+</article>

@@ -1,570 +1,188 @@
 ---
-import BaseLayout from '@layouts/BaseLayout.astro';
-import PortfolioMap from '@components/PortfolioMap';
+import BioLayout from '@layouts/BioLayout.astro';
+import BioPortrait from '@components/home/BioPortrait.astro';
+import StorySentence from '@components/home/StorySentence.astro';
+import { homeStory } from '@data/homeStory';
+
+const satelliteGlob = import.meta.glob<{ default: { src: string } }>(
+  '/src/images/satellite effects/*.{png,PNG,jpg,jpeg,webp}',
+  { eager: true },
+);
+const satelliteSrcs = Object.values(satelliteGlob).map((mod) => mod.default.src);
 ---
 
-<BaseLayout title="Conner Myers">
-  <div class="home-page design-c">
-    <div class="design-c__canopy" aria-hidden="true"></div>
-    <div class="design-c__trail" aria-hidden="true"></div>
-
-    <div class="design-c__shell">
-      <!-- Trailhead hero -->
-      <header class="design-c__hero">
-        <div class="design-c__badge">Trailhead</div>
-        <div class="design-c__hero-grid">
-          <div class="design-c__hero-copy">
-            <h1 class="design-c__name">Conner Myers</h1>
-            <p class="design-c__tagline">Explorer · Developer · Grower</p>
-            <div class="design-c__intro">
-              <p>Hi, I'm Conner. I graduated in May 2026 at the age of 30 with a B.S. in computer science/cybersecurity from Liberty University. The timeline of my life is rather nonlinear and looks pretty neat on a map, feel free to check it out in the map space below. Massive credit to my mom for taking pictures throughout the years and organizing them.</p>
-              <p>Whether you're a friend, family member, or stranger on the internet, I hope this page helps us connect a little closer. If you want to get in touch, please don't hesitate to send me an email at <a href="mailto:conn0myers@gmail.com">conn0myers@gmail.com</a>.</p>
-            </div>
-          </div>
-          <div class="design-c__portrait portrait-anchor">
-            <div class="design-c__portrait-frame">
-              <img src="/images/Me.jpg" alt="Conner Myers" width="150" height="150" />
-            </div>
-            <span class="design-c__portrait-caption">Mile 0</span>
-          </div>
-        </div>
-      </header>
-
-      <!-- Map as trail map -->
-      <section class="design-c__map-section home-map-row" aria-label="Life map">
-        <div class="design-c__map-label">
-          <span class="design-c__map-icon">🗺</span>
-          <span>Your journey starts here — explore the map</span>
-        </div>
-        <div class="design-c__map-frame map-panel">
-          <div class="map-panel__inner">
-            <PortfolioMap client:only="react" />
-          </div>
-        </div>
-      </section>
-
-      <main class="design-c__main home-main">
-        <div class="home-main__content">
-
-          <section class="design-c__waypoint">
-            <div class="design-c__waypoint-marker" aria-hidden="true">
-              <span class="design-c__marker-dot"></span>
-              <span class="design-c__marker-line"></span>
-            </div>
-            <div class="design-c__waypoint-body">
-              <h2 class="design-c__section-title">Work Experience</h2>
-              <p class="design-c__text">In 2017 I enlisted in the United States Air Force, following in the footsteps of my dad. During my four year term I traveled to California, Colorado and New Mexico to work on military satellite communications (MILSATCOM). I was told that for national security resons I wasn't allowed to take pictures of what I did, but you can see my full work history on LinkedIn by clicking on the card below.</p>
-              <a href="https://www.linkedin.com/in/conner-myers-0411481b1/" target="_blank" rel="noopener noreferrer" class="design-c__card waypoint-card" style="--card-bg: url('/images/cards/usaf.jpg')">
-                <span class="design-c__card-ribbon">USAF / MILSATCOM · 2017 – 2021</span>
-                <span class="design-c__card-link">See full work history on LinkedIn →</span>
-              </a>
-            </div>
-          </section>
-
-          <section class="design-c__waypoint">
-            <div class="design-c__waypoint-marker" aria-hidden="true">
-              <span class="design-c__marker-dot"></span>
-              <span class="design-c__marker-line"></span>
-            </div>
-            <div class="design-c__waypoint-body">
-              <h2 class="design-c__section-title">Projects</h2>
-              <p class="design-c__text">In university I got curious about game development so I took a free course online for Unity. You can check out two prototype games I built below, just curb your expectations.</p>
-              <div class="design-c__card design-c__card--unity waypoint-card" style="--card-bg: url('/images/cards/Unity.webp')">
-                <span class="design-c__card-ribbon">Unity Game Dev Course</span>
-                <div class="design-c__unity-pair">
-                  <a href="https://piancavallo.itch.io/unity-vehicle-demo" target="_blank" rel="noopener noreferrer" class="design-c__unity-card" style="--card-bg: url('/images/Unity Tank driving thumbnail.jpg')">
-                    <span class="design-c__unity-title">Tank Driver's Ed</span>
-                    <span class="design-c__unity-cta">Play game →</span>
-                  </a>
-                  <a href="https://piancavallo.itch.io/soccer" target="_blank" rel="noopener noreferrer" class="design-c__unity-card" style="--card-bg: url('/images/Soccer.jpg')">
-                    <span class="design-c__unity-title">Soccer</span>
-                    <span class="design-c__unity-cta">Play game →</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="design-c__waypoint">
-            <div class="design-c__waypoint-marker" aria-hidden="true">
-              <span class="design-c__marker-dot"></span>
-              <span class="design-c__marker-line"></span>
-            </div>
-            <div class="design-c__waypoint-body">
-              <h2 class="design-c__section-title">Hobbies</h2>
-              <p class="design-c__text">In the summer and fall of 2023 I lived (in a barn) and worked on an organic farm in north-western Arkansas. I've since found great joy in growing my own food at home.</p>
-              <div class="design-c__card-row">
-                <a href="/media?tab=garden" class="design-c__card waypoint-card" style="--card-bg: url('/images/cards/garden.jpg')">
-                  <span class="design-c__card-ribbon">Backyard Garden</span>
-                  <span class="design-c__card-link">View garden →</span>
-                </a>
-                <a href="/media?tab=books" class="design-c__card waypoint-card" style="--card-bg: url('/images/cards/library.webp')">
-                  <span class="design-c__card-ribbon">Library</span>
-                  <span class="design-c__card-link">Browse library →</span>
-                </a>
-              </div>
-              <p class="design-c__text design-c__text--note">I'm keeping a digital libary of the books I've been reading.</p>
-            </div>
-          </section>
-
-          <section class="design-c__waypoint design-c__waypoint--last">
-            <div class="design-c__waypoint-marker" aria-hidden="true">
-              <span class="design-c__marker-dot design-c__marker-dot--end"></span>
-            </div>
-            <div class="design-c__waypoint-body">
-              <h2 class="design-c__section-title">Contact</h2>
-              <p class="design-c__text design-c__text--note">Send a signal from base camp.</p>
-              <div class="design-c__contact contact-stamps" aria-label="Contact links">
-                <a href="https://www.linkedin.com/in/conner-myers-0411481b1/" target="_blank" rel="noopener noreferrer" class="design-c__chip design-c__chip--moss">LinkedIn</a>
-                <button id="email-copy-button" type="button" data-email="conn0myers@gmail.com" class="design-c__chip design-c__chip--bark">
-                  <span class="stamp-button__default">Email</span>
-                  <span class="stamp-button__copied" aria-hidden="true">Copied!</span>
-                </button>
-                <a href="/Conner_Myers_Resume.pdf" target="_blank" rel="noopener noreferrer" class="design-c__chip design-c__chip--clay" title="Open resume (PDF)">Resume</a>
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
-
-      <footer class="design-c__footer">
-        <span>© {new Date().getFullYear()} Conner Myers</span>
-        <span class="design-c__footer-dot">·</span>
-        <span>Crafted with <a href="https://astro.build/" target="_blank" rel="noopener noreferrer">Astro</a> under open sky</span>
-      </footer>
+<BioLayout title="Conner Myers" description="Conner Myers — personal homepage">
+  <div class="bio-home">
+    <div class="bio-home__content">
+      <h1 class="bio-home__name">
+        <span class="bio-home__name-lead">{homeStory.nameLead}</span>
+        {homeStory.name}
+      </h1>
+      <div class="bio-home__sentences">
+        {homeStory.sentences.map((segments) => (
+          <StorySentence segments={segments} />
+        ))}
+      </div>
     </div>
+    <BioPortrait src={homeStory.portraitSrc} alt={homeStory.portraitAlt} />
   </div>
 
+  <script
+    type="application/json"
+    id="story-effect-assets"
+    set:html={JSON.stringify({ satelliteSrcs })}
+  />
+
   <script>
-    const emailButton = document.getElementById('email-copy-button');
-    let copyFeedbackTimeout: ReturnType<typeof setTimeout> | null = null;
-    emailButton?.addEventListener('click', async () => {
-      const email = emailButton.dataset.email;
-      if (!email) return;
-      await navigator.clipboard.writeText(email);
-      emailButton.classList.add('is-copied');
-      if (copyFeedbackTimeout) clearTimeout(copyFeedbackTimeout);
-      copyFeedbackTimeout = setTimeout(() => emailButton.classList.remove('is-copied'), 1250);
+    const assetsEl = document.getElementById('story-effect-assets');
+    const assets = assetsEl
+      ? (JSON.parse(assetsEl.textContent || '{}') as {
+          satelliteSrcs?: string[];
+        })
+      : {};
+    const satelliteSrcs = assets.satelliteSrcs ?? [];
+
+    const user = ['conn0', 'myers'].join('');
+    const domain = ['gmail', 'com'].join('.');
+    const email = `${user}@${domain}`;
+    const confettiColors = ['#14b8a6', '#3b82f6', '#ffc013', '#ededed', '#22d3ee'];
+
+    function burstConfetti(x: number, y: number) {
+      const count = 28;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'bio-confetti';
+        piece.setAttribute('aria-hidden', 'true');
+
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
+        const distance = 48 + Math.random() * 72;
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance - 20;
+        const rot = (Math.random() * 520 - 260).toFixed(0);
+        const size = 5 + Math.random() * 5;
+
+        piece.style.left = `${x}px`;
+        piece.style.top = `${y}px`;
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size * (0.5 + Math.random())}px`;
+        piece.style.background = confettiColors[i % confettiColors.length];
+        piece.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+        piece.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+        piece.style.setProperty('--rot', `${rot}deg`);
+        piece.style.animationDelay = `${(Math.random() * 40).toFixed(0)}ms`;
+
+        document.body.appendChild(piece);
+        piece.addEventListener('animationend', () => piece.remove(), { once: true });
+      }
+    }
+
+    function showCopiedLabel(x: number, y: number) {
+      const label = document.createElement('span');
+      label.className = 'bio-copied-label';
+      label.textContent = 'Copied!';
+      label.style.left = `${x}px`;
+      label.style.top = `${y - 28}px`;
+      document.body.appendChild(label);
+
+      const remove = () => label.remove();
+      label.addEventListener('animationend', remove, { once: true });
+      window.setTimeout(remove, 2200);
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('button.bio-home__email').forEach((el) => {
+      el.textContent = email;
+      el.setAttribute('aria-label', `Copy email address ${email}`);
+
+      el.addEventListener('click', async (event) => {
+        try {
+          await navigator.clipboard.writeText(email);
+        } catch {
+          return;
+        }
+        burstConfetti(event.clientX, event.clientY);
+        showCopiedLabel(event.clientX, event.clientY);
+      });
+    });
+
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    type Edge = 'left' | 'right' | 'top' | 'bottom';
+
+    function pointOnEdge(edge: Edge, margin: number) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const along = 0.12 + Math.random() * 0.76;
+      switch (edge) {
+        case 'left':
+          return { x: -margin, y: along * h };
+        case 'right':
+          return { x: w + margin, y: along * h };
+        case 'top':
+          return { x: along * w, y: -margin };
+        case 'bottom':
+          return { x: along * w, y: h + margin };
+      }
+    }
+
+    function randomEdgePair() {
+      const edges: Edge[] = ['left', 'right', 'top', 'bottom'];
+      const from = edges[Math.floor(Math.random() * edges.length)]!;
+      let to = edges[Math.floor(Math.random() * edges.length)]!;
+      while (to === from) {
+        to = edges[Math.floor(Math.random() * edges.length)]!;
+      }
+      return { from, to };
+    }
+
+    function randomSatellitePath() {
+      const { from, to } = randomEdgePair();
+      const start = pointOnEdge(from, 90);
+      const end = pointOnEdge(to, 120);
+      const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
+      return {
+        x0: `${start.x}px`,
+        y0: `${start.y}px`,
+        x1: `${end.x}px`,
+        y1: `${end.y}px`,
+        rot0: `${angle - 18}deg`,
+        rot1: `${angle + 22}deg`,
+      };
+    }
+
+    function pickSatelliteSrc() {
+      if (!satelliteSrcs.length) return '';
+      return satelliteSrcs[Math.floor(Math.random() * satelliteSrcs.length)]!;
+    }
+
+    function spawnStoryEffect(effect: string) {
+      if (prefersReducedMotion()) return;
+      if (effect !== 'satellite') return;
+      const actor = document.createElement('div');
+      actor.className = 'bio-effect-actor bio-effect-actor--satellite';
+      actor.setAttribute('aria-hidden', 'true');
+      const src = pickSatelliteSrc();
+      if (src) actor.style.backgroundImage = `url("${src}")`;
+      const path = randomSatellitePath();
+      actor.style.setProperty('--sat-x0', path.x0);
+      actor.style.setProperty('--sat-y0', path.y0);
+      actor.style.setProperty('--sat-x1', path.x1);
+      actor.style.setProperty('--sat-y1', path.y1);
+      actor.style.setProperty('--sat-rot0', path.rot0);
+      actor.style.setProperty('--sat-rot1', path.rot1);
+      document.body.appendChild(actor);
+      actor.addEventListener('animationend', () => actor.remove(), { once: true });
+      window.setTimeout(() => actor.remove(), 6500);
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('[data-story-effect]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const effect = btn.dataset.storyEffect;
+        if (effect === 'satellite') {
+          spawnStoryEffect(effect);
+        }
+      });
     });
   </script>
-
-  <style is:global>
-    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700&display=swap');
-
-    html, body {
-      background: #e8e0d0 !important;
-      background-image:
-        radial-gradient(ellipse at 20% 0%, rgba(74, 124, 89, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 100%, rgba(139, 90, 43, 0.1) 0%, transparent 45%),
-        linear-gradient(175deg, #ebe4d4 0%, #ddd4c0 40%, #d4cbb5 100%) !important;
-      color: #2c3e2a !important;
-      font-family: 'Nunito', 'Segoe UI', sans-serif !important;
-    }
-    h1, h2, h3, h4 {
-      font-family: 'Fraunces', Georgia, serif !important;
-      color: #1e3d24 !important;
-      letter-spacing: 0.01em !important;
-    }
-  </style>
-
-  <style>
-    .design-c {
-      position: relative;
-      min-height: 100svh;
-      color: #2c3e2a;
-    }
-
-    .design-c__canopy {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 120% 40% at 50% -10%, rgba(45, 90, 55, 0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 80% 30% at 10% 20%, rgba(74, 124, 89, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 25% at 90% 15%, rgba(74, 124, 89, 0.06) 0%, transparent 45%);
-    }
-
-    .design-c__trail {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q35 20 30 35 Q25 50 30 55' stroke='%232c5a32' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
-      background-size: 80px 80px;
-    }
-
-    .design-c__shell {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2.5rem 1.25rem 2rem;
-    }
-
-    .design-c__hero {
-      position: relative;
-      margin-bottom: 2.5rem;
-      padding: 2rem 1.75rem;
-      background: linear-gradient(145deg, rgba(255, 252, 245, 0.92) 0%, rgba(245, 238, 220, 0.88) 100%);
-      border-radius: 24px 24px 24px 8px;
-      border: 1px solid rgba(74, 103, 65, 0.2);
-      box-shadow: 0 12px 40px rgba(44, 62, 42, 0.08);
-    }
-
-    .design-c__badge {
-      position: absolute;
-      top: -0.6rem;
-      left: 1.5rem;
-      padding: 0.25rem 0.85rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #f5f0e6;
-      background: #3d6b47;
-      border-radius: 100px;
-    }
-
-    .design-c__hero-grid {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 2rem;
-      align-items: start;
-      margin-top: 0.5rem;
-    }
-
-    @media (max-width: 680px) {
-      .design-c__hero-grid { grid-template-columns: 1fr; }
-      .design-c__portrait { justify-self: center; }
-    }
-
-    .design-c__name {
-      margin: 0 0 0.25rem;
-      font-size: clamp(2.25rem, 5vw, 3.25rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: #1e3d24;
-    }
-
-    .design-c__tagline {
-      margin: 0 0 1.25rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #5a7a52;
-      letter-spacing: 0.04em;
-    }
-
-    .design-c__intro p {
-      margin: 0 0 0.85rem;
-      font-size: 1rem;
-      line-height: 1.7;
-      color: #3d4f3a;
-    }
-
-    .design-c__intro a {
-      color: #2d5a3d;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgba(45, 90, 61, 0.4);
-    }
-
-    .design-c__intro a:hover { color: #8b5a2b; }
-
-    .design-c__portrait-frame {
-      padding: 6px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #6b8f5e 0%, #4a6741 50%, #8b5a2b 100%);
-      box-shadow: 0 8px 24px rgba(44, 62, 42, 0.15);
-    }
-
-    .design-c__portrait-frame img {
-      display: block;
-      width: 9.375rem;
-      height: 9.375rem;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #f5f0e6;
-    }
-
-    .design-c__portrait-caption {
-      display: block;
-      margin-top: 0.5rem;
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #8b5a2b;
-    }
-
-    .design-c__map-section { margin-bottom: 2.5rem; }
-
-    .design-c__map-label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #4a6741;
-    }
-
-    .design-c__map-frame {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 3px solid #c4b89a;
-      background: #f5f0e6;
-      box-shadow:
-        0 8px 30px rgba(44, 62, 42, 0.1),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-    }
-
-    .design-c__waypoint {
-      display: grid;
-      grid-template-columns: 2rem 1fr;
-      gap: 0 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .design-c__waypoint-marker {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 0.35rem;
-    }
-
-    .design-c__marker-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #4a7c59;
-      border: 3px solid #f5f0e6;
-      box-shadow: 0 0 0 2px #4a7c59;
-      flex-shrink: 0;
-    }
-
-    .design-c__marker-dot--end {
-      background: #8b5a2b;
-      box-shadow: 0 0 0 2px #8b5a2b;
-    }
-
-    .design-c__marker-line {
-      flex: 1;
-      width: 3px;
-      min-height: 2rem;
-      margin-top: 4px;
-      background: repeating-linear-gradient(
-        180deg,
-        #a8b89a 0 6px,
-        transparent 6px 12px
-      );
-      border-radius: 2px;
-    }
-
-    .design-c__section-title {
-      margin: 0 0 0.6rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1e3d24;
-    }
-
-    .design-c__text {
-      margin: 0 0 1rem;
-      font-size: 0.975rem;
-      line-height: 1.7;
-      color: #3d4f3a;
-      max-width: 40rem;
-    }
-
-    .design-c__text--note {
-      font-size: 0.875rem;
-      color: #5a6b52;
-      font-style: italic;
-    }
-
-    .design-c__card-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .design-c__card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: 200px;
-      padding: 1rem;
-      border-radius: 14px;
-      overflow: hidden;
-      text-decoration: none;
-      color: #fff;
-      background: var(--card-bg) center / cover no-repeat;
-      background-color: #4a6741;
-      box-shadow: 0 6px 20px rgba(44, 62, 42, 0.12);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .design-c__card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(44, 62, 42, 0.18);
-    }
-
-    .design-c__card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(30, 45, 28, 0.7) 0%, rgba(30, 45, 28, 0.1) 55%);
-      border-radius: 14px;
-    }
-
-    .design-c__card > * { position: relative; z-index: 1; }
-
-    .design-c__card-ribbon {
-      position: absolute;
-      top: 0.85rem;
-      left: 0.85rem;
-      z-index: 2;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #1e3d24;
-      background: rgba(245, 240, 230, 0.93);
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .design-c__card-link {
-      font-size: 0.875rem;
-      font-weight: 600;
-    }
-
-    .design-c__card--unity {
-      cursor: default;
-      padding: 0;
-      min-height: auto;
-    }
-
-    .design-c__unity-pair {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 200px;
-    }
-
-    .design-c__unity-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0.85rem;
-      text-decoration: none;
-      color: #fff;
-      background: var(--card-bg) center / cover no-repeat;
-      transition: filter 0.25s ease;
-    }
-
-    .design-c__unity-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(30, 45, 28, 0.35);
-      transition: background 0.25s ease;
-    }
-
-    .design-c__unity-card:hover::after { background: rgba(30, 45, 28, 0.15); }
-    .design-c__unity-card > * { position: relative; z-index: 1; }
-
-    .design-c__unity-title {
-      position: absolute;
-      top: 0.65rem;
-      left: 0.65rem;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #1e3d24;
-      background: rgba(245, 240, 230, 0.92);
-      border-radius: 6px;
-    }
-
-    .design-c__unity-cta {
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .design-c__contact {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-    }
-
-    .design-c__chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.6rem 1.15rem;
-      font-family: inherit;
-      font-size: 0.875rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: none;
-      border-radius: 100px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .design-c__chip:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(44, 62, 42, 0.15);
-    }
-
-    .design-c__chip--moss {
-      color: #f5f0e6;
-      background: linear-gradient(145deg, #5a8f62 0%, #3d6b47 100%);
-    }
-
-    .design-c__chip--bark {
-      color: #f5f0e6;
-      background: linear-gradient(145deg, #8b5a2b 0%, #6b4423 100%);
-    }
-
-    .design-c__chip--clay {
-      color: #f5f0e6;
-      background: linear-gradient(145deg, #a67c52 0%, #8b6340 100%);
-    }
-
-    .stamp-button__copied { display: none; }
-    .design-c__chip.is-copied .stamp-button__default { display: none; }
-    .design-c__chip.is-copied .stamp-button__copied { display: inline; }
-
-    .design-c__footer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.35rem 0.75rem;
-      padding: 2rem 0 1rem;
-      font-size: 0.8rem;
-      color: #6b7d62;
-    }
-
-    .design-c__footer a {
-      color: #3d6b47;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .design-c__footer a:hover { text-decoration: underline; }
-
-    :global(body.map-expanded) .map-panel,
-    :global(body.map-expanded) .map-panel__inner { overflow: visible; }
-    :global(body.map-expanded) .home-map-row { position: relative; z-index: 100; }
-    :global(body.map-expanded) .design-c__main,
-    :global(body.map-expanded) .design-c__footer,
-    :global(body.map-expanded) .design-c__hero { visibility: hidden; pointer-events: none; }
-    :global(body.map-expanded) .design-c__contact { display: none; }
-    :global(body.map-expanded) .portrait-anchor { display: none; }
-  </style>
-</BaseLayout>
+</BioLayout>

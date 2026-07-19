@@ -16,29 +16,18 @@
     overflow-x: hidden;
     font-family: 'Source Serif 4', Georgia, serif;
   }
-
+/* 
   h1, h2, h3, h4 {
     font-family: 'Cormorant Garamond', 'Times New Roman', serif;
     letter-spacing: 0.02em;
     color: #253447;
-  }
-  @keyframes shake {
-    0%   { transform: translateY(0) rotate(0deg); }
-    20%  { transform: translateY(-4px) rotate(-2deg); }
-    40%  { transform: translateY(-2px) rotate(2deg); }
-    60%  { transform: translateY(-4px) rotate(-1deg); }
-    80%  { transform: translateY(-2px) rotate(1deg); }
-    100% { transform: translateY(0) rotate(0deg); }
-  }
-  
-  .hover-shake:hover {
-    animation: shake 0.5s ease;
-  }
+  } */
+}
 
-  .hover-shake {
-    animation: shake 0.5s ease 1.5s both;
-    transform: translateZ(0);
-    image-rendering: crisp-edges;
-  }
-
+.text-arrow {
+  font-size: 1.35em;
+  font-weight: 600;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: -0.1em;
 }

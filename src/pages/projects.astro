@@ -1,50 +1,352 @@
 ---
-// src/pages/projects.astro
-import BaseLayout from '@layouts/BaseLayout.astro';
-
-// Replace with real data or a CMS/content collection later
-const projects = [
-  {
-    title: 'Project One',
-    description: 'Short description of what this project is and what problem it solves.',
-    tags: ['React', 'TypeScript'],
-    href: '#',
-  },
-  {
-    title: 'Project Two',
-    description: 'Short description of what this project is and what problem it solves.',
-    tags: ['Astro', 'Tailwind'],
-    href: '#',
-  },
-  {
-    title: 'Project Three',
-    description: 'Short description of what this project is and what problem it solves.',
-    tags: ['Node.js', 'API'],
-    href: '#',
-  },
-];
+import BioLayout from '@layouts/BioLayout.astro';
+import { projectSections } from '@data/projects';
+import '@styles/dark-subpage.css';
 ---
 
-<BaseLayout title="Projects | yourname" description="Things I've built">
-  <h1 class="text-4xl font-bold tracking-tight">Projects</h1>
-  <p class="mt-3 text-gray-500">A selection of things I've worked on.</p>
+<BioLayout title="Projects | Conner Myers" description="Games, APIs, and things I'm building.">
+  <div class="dark-subpage">
+    <h1 class="dark-subpage__title">Projects</h1>
+    <p class="dark-subpage__intro">
+      Games, an API, and a few things still on the workbench. More on{' '}
+      <a href="https://github.com/Piancavallo" target="_blank" rel="noopener noreferrer">GitHub</a>.
+    </p>
 
-  <ul class="mt-10 space-y-6">
-    {projects.map((project) => (
-      <li class="group rounded-xl border border-gray-100 p-6 transition hover:border-gray-300">
-        <a href={project.href} class="flex items-start justify-between gap-4">
-          <div>
-            <h2 class="font-semibold group-hover:underline">{project.title}</h2>
-            <p class="mt-1 text-sm text-gray-500">{project.description}</p>
-            <ul class="mt-3 flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <li class="rounded-full bg-gray-100 px-3 py-0.5 text-xs text-gray-600">{tag}</li>
+            <div class="dark-subpage__content projects">
+      {
+        projectSections.map((section) => {
+          const isPanel = section.id === 'games' || section.id === 'trail-atlas';
+          const sectionClass = [
+            'projects__section',
+            isPanel && 'projects__section--panel',
+            section.id === 'games' && 'projects__section--games',
+            section.id === 'trail-atlas' && 'projects__section--api',
+            section.id === 'looking-ahead' && 'projects__section--ahead',
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+          return (
+          <section class={sectionClass} aria-labelledby={`section-${section.id}`}>
+            <h2 id={`section-${section.id}`} class="projects__section-title">
+              {section.title}
+            </h2>
+            {section.intro && <p class="projects__section-intro">{section.intro}</p>}
+
+            <ul class="projects__list">
+              {section.projects.map((project) => (
+                <li class="projects__item">
+                  {project.imageSrc && (
+                    <img
+                      class="projects__thumb"
+                      src={project.imageSrc}
+                      alt=""
+                      width="160"
+                      height="100"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  <div class="projects__body">
+                    <div class="projects__heading">
+                      <h3 class="projects__name">{project.title}</h3>
+                    </div>
+                    <p class="projects__summary">{project.summary}</p>
+                    {((project.playUrl || project.githubUrl) && !project.itchEmbedSrc) && (
+                      <p class="projects__links">
+                        {project.playUrl && (
+                          <a href={project.playUrl} target="_blank" rel="noopener noreferrer">
+                            {project.playLabel ?? 'Play'}{' '}
+                            <span class="text-arrow" aria-hidden="true">→</span>
+                          </a>
+                        )}
+                        {project.githubUrl && (
+                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                            GitHub <span class="text-arrow" aria-hidden="true">→</span>
+                          </a>
+                        )}
+                      </p>
+                    )}
+                    {project.itchEmbedSrc && (
+                      <div class="projects__play" data-play>
+                        <p class="projects__links">
+                          <button
+                            type="button"
+                            class="projects__play-btn"
+                            data-play-toggle
+                            aria-expanded="false"
+                            aria-controls={`play-${project.id}`}
+                          >
+                            <span data-play-label>Play game</span>{' '}
+                            <span class="text-arrow" data-play-arrow aria-hidden="true">→</span>
+                          </button>
+                          {project.githubUrl && (
+                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                              GitHub <span class="text-arrow" aria-hidden="true">→</span>
+                            </a>
+                          )}
+                        </p>
+                        <div
+                          id={`play-${project.id}`}
+                          class="projects__embed"
+                          hidden
+                          style={`aspect-ratio: ${project.itchEmbedWidth ?? 640} / ${project.itchEmbedHeight ?? 380}; max-width: ${project.itchEmbedWidth ?? 640}px`}
+                        >
+                          <iframe
+                            class="projects__itch"
+                            data-src={project.itchEmbedSrc}
+                            frameborder="0"
+                            allowfullscreen
+                            title={`Play ${project.title}`}
+                          >
+                            {project.playUrl && (
+                              <a href={project.playUrl} target="_blank" rel="noopener noreferrer">
+                                Play {project.title} on itch.io
+                              </a>
+                            )}
+                          </iframe>
+                        </div>
+                      </div>
+                    )}
+                    {!project.playUrl && !project.githubUrl && project.status !== 'live' && (
+                      <p class="projects__coming">Coming soon</p>
+                    )}
+                  </div>
+                </li>
               ))}
             </ul>
-          </div>
-          <span class="mt-0.5 text-gray-300 group-hover:text-gray-600">→</span>
-        </a>
-      </li>
-    ))}
-  </ul>
-</BaseLayout>
+          </section>
+          );
+        })
+      }
+    </div>
+  </div>
+</BioLayout>
+
+<style>
+  .projects__section {
+    margin-bottom: 2rem;
+  }
+
+  .projects__section:last-child {
+    margin-bottom: 0;
+  }
+
+  .projects__section--panel {
+    padding: 1.35rem 1.35rem 1.35rem 1.45rem;
+    background: rgba(255, 252, 245, 0.7);
+    border: 1px solid rgba(180, 150, 100, 0.4);
+    border-radius: 4px;
+    border-left-width: 3px;
+  }
+
+  .projects__section--games {
+    border-left-color: #0d9488;
+  }
+
+  .projects__section--api {
+    border-left-color: #2563eb;
+  }
+
+  .projects__section--ahead {
+    margin-top: 0.5rem;
+    padding-top: 0.25rem;
+  }
+
+  .projects__section--ahead .projects__section-title {
+    font-size: 1.05rem;
+    color: #5c5348;
+    font-weight: 500;
+  }
+
+  .projects__section-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    letter-spacing: -0.01em;
+  }
+
+  .projects__section--panel .projects__section-title {
+    font-size: 1.35rem;
+  }
+
+  .projects__section-intro {
+    margin: 0 0 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #5c5348;
+    max-width: 36rem;
+  }
+
+  .projects__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .projects__item {
+    display: flex;
+    gap: 1.15rem;
+    align-items: flex-start;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(180, 150, 100, 0.35);
+  }
+
+  .projects__item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .projects__thumb {
+    flex-shrink: 0;
+    width: 7.5rem;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid rgba(180, 150, 100, 0.45);
+    border-radius: 2px;
+  }
+
+  .projects__body {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .projects__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .projects__name {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #2a241c;
+  }
+
+  .projects__summary {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #5c5348;
+    max-width: 36rem;
+  }
+
+  .projects__links {
+    margin: 0.65rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .projects__links a {
+    color: #0d9488;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .projects__links a:hover,
+  .projects__links a:focus-visible {
+    color: #2563eb;
+    outline: none;
+  }
+
+  .projects__play-btn {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #0d9488;
+    cursor: pointer;
+  }
+
+  .projects__play-btn:hover,
+  .projects__play-btn:focus-visible {
+    color: #2563eb;
+    outline: none;
+  }
+
+  .projects__coming {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: #8a7f72;
+    font-style: italic;
+  }
+
+  .projects__embed {
+    position: relative;
+    width: 100%;
+    max-width: 40rem;
+    margin-top: 1rem;
+    aspect-ratio: 640 / 380;
+    background: #efe6d4;
+    border: 1px solid rgba(180, 150, 100, 0.45);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .projects__embed[hidden] {
+    display: none;
+  }
+
+  .projects__itch {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  @media (max-width: 520px) {
+    .projects__item {
+      flex-direction: column;
+    }
+
+    .projects__thumb {
+      width: min(100%, 14rem);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-play]').forEach((wrap) => {
+    const btn = wrap.querySelector('[data-play-toggle]');
+    const panel = wrap.querySelector('.projects__embed');
+    const iframe = wrap.querySelector('iframe');
+    if (!(btn instanceof HTMLButtonElement) || !(panel instanceof HTMLElement) || !(iframe instanceof HTMLIFrameElement)) {
+      return;
+    }
+
+    const label = btn.querySelector('[data-play-label]');
+    const arrow = btn.querySelector('[data-play-arrow]');
+
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      if (open) {
+        btn.setAttribute('aria-expanded', 'false');
+        if (label) label.textContent = 'Play game';
+        if (arrow instanceof HTMLElement) arrow.hidden = false;
+        panel.hidden = true;
+        iframe.removeAttribute('src');
+      } else {
+        btn.setAttribute('aria-expanded', 'true');
+        if (label) label.textContent = 'Close game';
+        if (arrow instanceof HTMLElement) arrow.hidden = true;
+        const src = iframe.dataset.src;
+        if (src) iframe.src = src;
+        panel.hidden = false;
+      }
+    });
+  });
+</script>

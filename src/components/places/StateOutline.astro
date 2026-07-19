@@ -1,0 +1,27 @@
+---
+import { getGeoOutline } from '@data/geoOutlines';
+
+interface Props {
+  geoKey: string;
+  label: string;
+}
+
+const { geoKey, label } = Astro.props;
+const outline = getGeoOutline(geoKey);
+---
+
+{
+  outline && (
+    <figure class="places-outline" aria-hidden="true">
+      <svg
+        class="places-outline__svg"
+        viewBox={outline.viewBox}
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label={label}
+      >
+        <path class="places-outline__path" d={outline.d} />
+      </svg>
+    </figure>
+  )
+}

@@ -1,0 +1,60 @@
+---
+import type { StoryLinkStyle, StorySegment } from '@data/homeStory';
+import SpiderEasterEgg from '@components/home/SpiderEasterEgg';
+
+interface Props {
+  segments: StorySegment[];
+}
+
+const { segments } = Astro.props;
+
+function styleClass(style?: StoryLinkStyle) {
+  return style ? `story-link--${style}` : 'story-link--teal';
+}
+---
+
+<p class="bio-home__sentence">
+  {
+    segments.map((segment) => {
+      if (segment.type === 'text') {
+        return segment.value;
+      }
+      if (segment.type === 'email') {
+        return (
+          <button
+            type="button"
+            class={`bio-home__email ${styleClass(segment.style)}`}
+          ></button>
+        );
+      }
+      if (segment.type === 'effect' && segment.effect === 'spider') {
+        return (
+          <SpiderEasterEgg
+            client:load
+            label={segment.label}
+            className={styleClass(segment.style ?? 'rose')}
+          />
+        );
+      }
+      if (segment.type === 'effect') {
+        return (
+          <button
+            type="button"
+            class={`bio-home__effect ${styleClass(segment.style)}`}
+            data-story-effect={segment.effect}
+          >
+            {segment.label}
+          </button>
+        );
+      }
+      return (
+        <a
+          href={segment.href}
+          class={styleClass(segment.style)}
+          {...(segment.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {segment.label}</a>
+      );
+    })
+  }
+</p>

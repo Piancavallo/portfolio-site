@@ -1,0 +1,43 @@
+---
+import BioLayout from '@layouts/BioLayout.astro';
+import AlbumGallery from '@components/media/AlbumGallery';
+import { imagesFromGlob } from '../utils/loadImageAlbum';
+import '@styles/dark-subpage.css';
+import '@styles/album-gallery.css';
+
+const imageGlob = import.meta.glob<{ default: { src: string } }>(
+  '/src/images/work/dripping-springs/**/*.{jpg,jpeg,png,webp,gif,avif,JPEG,JPG,PNG}',
+  { eager: true },
+);
+
+const farmImages = imagesFromGlob(
+  imageGlob,
+  '/src/images/work/dripping-springs/',
+  'Dripping Springs Garden photo',
+);
+---
+
+<BioLayout title="Farm | Conner Myers" description="Photos from Dripping Springs Garden in Arkansas.">
+  <div class="dark-subpage">
+    <h1 class="dark-subpage__title">Farm</h1>
+    <p class="dark-subpage__intro">
+      Photos from my time living and volunteering on a{' '}
+      <a
+        href="https://www.drippingspringsgarden.com/our-story"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        farm
+      </a>
+      {' '}in Arkansas — Dripping Springs Garden, 2023.
+    </p>
+    <div class="dark-subpage__content">
+      <AlbumGallery
+        client:load
+        images={farmImages}
+        emptyFolderHint="src/images/work/dripping-springs/"
+        variant="default"
+      />
+    </div>
+  </div>
+</BioLayout>

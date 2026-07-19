@@ -1,0 +1,63 @@
+.dark-subpage {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2rem) 4rem;
+  box-sizing: border-box;
+}
+
+.dark-subpage__back {
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #0d9488;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+
+.dark-subpage__back:hover,
+.dark-subpage__back:focus-visible {
+  color: #0f766e;
+  outline: none;
+}
+
+.dark-subpage__title {
+  margin: 0 0 0.5rem;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #1e3a5f;
+}
+
+.dark-subpage__intro {
+  margin: 0 0 2rem;
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #5c5348;
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+
+.dark-subpage__intro a {
+  color: #e11d48;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dark-subpage__intro a:hover,
+.dark-subpage__intro a:focus-visible {
+  color: #be123c;
+  outline: none;
+}
+
+.dark-subpage__content {
+  min-width: 0;
+}
+
+.album-lightbox--dark {
+  background: rgba(42, 36, 28, 0.92);
+}

@@ -1,0 +1,27 @@
+---
+import BioLayout from '@layouts/BioLayout.astro';
+import PersonalLibrary from '@components/library/PersonalLibrary';
+import { buildLibraryBooks, NOTE_EXPAND_THRESHOLD } from '@data/libraryBooks';
+import '@styles/dark-subpage.css';
+
+const libraryBooks = await buildLibraryBooks();
+---
+
+<BioLayout title="Reading | Conner Myers" description="Books I've been reading.">
+  <div class="dark-subpage">
+    <h1 class="dark-subpage__title">Reading</h1>
+    <p class="dark-subpage__intro">
+      These are just off the top of my recent reading list. Over time I'd like to add more.
+    </p>
+    <div class="dark-subpage__content">
+      <PersonalLibrary
+        client:only="react"
+        books={libraryBooks}
+        noteThreshold={NOTE_EXPAND_THRESHOLD}
+        theme="light"
+      >
+        <p slot="fallback" class="dark-subpage__intro">Loading books…</p>
+      </PersonalLibrary>
+    </div>
+  </div>
+</BioLayout>

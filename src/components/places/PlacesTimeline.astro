@@ -1,0 +1,29 @@
+---
+import TimelineEntry from './TimelineEntry.astro';
+import { getLivedTimelineEntries } from '@data/places';
+
+const entries = getLivedTimelineEntries();
+---
+
+<section class="timeline" aria-label="Places I've lived">
+  {entries.map((entry) => (
+    <TimelineEntry entry={entry} />
+  ))}
+</section>
+
+<script>
+  function initAlbumButtons() {
+    document.querySelectorAll<HTMLButtonElement>('[data-album-id]').forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.albumId;
+        if (!id) return;
+        window.dispatchEvent(new CustomEvent('places:open-album', { detail: { id } }));
+      });
+    });
+  }
+
+  initAlbumButtons();
+  document.addEventListener('astro:page-load', initAlbumButtons);
+</script>

@@ -1,333 +1,70 @@
 // src/components/PortfolioMap.tsx
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { albumPhotoCaptions } from '../data/albumPhotoCaptions';
+import GalleryPopoutDialog from './media/GalleryPopoutDialog';
+import AlbumGallery from './media/AlbumGallery';
+import { usePrefersReducedMotion } from './library/usePrefersReducedMotion';
+import {
+  ME,
+  PLACES_LIVED,
+  PLACES_TRAVELED,
+  extractYearRange,
+  getTimelineEntryKey,
+  type MapPlace,
+  type PlaceCategory,
+  type TimelineEntry,
+} from '../data/places';
 
-const ME = {
-  name: 'Conner Myers',
-  title: 'Your Title / Tagline',
-  photo: '/images/Me.jpg',
-  home: { lat: 38.884, lng: -75.827 },
-};
-
-const allAlbumImages = import.meta.glob('/src/images/albums/*/*.{jpg,jpeg,png,webp}', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-}) as Record<string, string>;
-
-function getAlbumPhotos(albumName: string) {
-  const captionsForAlbum = albumPhotoCaptions[albumName] ?? {};
-  return Object.entries(allAlbumImages)
-    .filter(([path]) => path.includes(`/src/images/albums/${albumName}/`))
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([path, url]) => {
-      const filename = path.split('/').pop() ?? '';
-      return {
-        src: url,
-        caption: captionsForAlbum[filename] ?? '',
-      };
-    });
+function getPinTooltipLabel(place: { name: string; years?: string }) {
+  return place.years ? `${place.name} · ${place.years}` : place.name;
 }
 
-// Places I've lived
-const PLACES_LIVED = [
-  {
-    id: 'Denton',
-    name: 'Denton, MD',
-    lat: 38.884,
-    lng: -75.827,
-    years: '2024 - Present',
-    photos: getAlbumPhotos('Denton'),
-  },
-  {
-    id: 'Arkansas',
-    name: 'Fayetteville, AR',
-    lat: 36.2,
-    lng: -93.57,
-    photos: getAlbumPhotos('Arkansas'),
-    years: '2023',
-    caption:
-      'Worked as a volunteer farmhand through summer into late fall. Waking up at 3am on Saturdays for farmers markets was definitely worth it. Made some good friends, too.',
-  },
-  {
-    id: 'Kansas',
-    name: 'Kansas',
-    lat: 38.3708,
-    lng: -97.6642,
-    years: 'Over the yars',
-    photos: getAlbumPhotos('Kansas'),
-    caption:
-      'Visited here multiple times throughout my life for holidays. A lot of these pictures come from many 4th of Julys in my Aunt\'s backyard with a pool.',
-  },
-  {
-    id: 'Colo Springs',
-    name: 'Peterson AFB, Colorado Springs',
-    lat: 38.828,
-    lng: -104.708,
-    years: '2017 - 2021',
-    photos: getAlbumPhotos('Colorado'),
-  },
-  {
-    id: 'Monterey',
-    name: 'Monterey, CA',
-    lat: 36.586,
-    lng: -121.879,
-    years: '2011-2014',
-    photos: getAlbumPhotos('Monterey'),
-  },
-  {
-    id: 'Ohio',
-    name: 'Centerville, OH',
-    lat: 39.643,
-    lng: -84.195,
-    years: '2007 - 2011',
-    photos: getAlbumPhotos('Ohio'),
-  },
-  {
-    id: 'Italy',
-    name: 'San Martino Di Campagna, Italy',
-    lat: 46.077,
-    lng: 12.652,
-    years: '2004 - 2007',
-    photos: getAlbumPhotos('Italy'),
-    caption: 'Attended local Italian school where I became fluent and made "molti amici"!',
-  },
-  {
-    id: 'Vegas',
-    name: 'Las Vegas, NV',
-    lat: 36.303,
-    lng: -115.2636,
-    years: '2001 - 2004',
-    photos: getAlbumPhotos('Vegas'),
-  },
-  {
-    id: 'TX',
-    name: 'San Angelo, TX',
-    lat: 31.4307,
-    lng: -100.4237,
-    years: '2000 - 2001',
-    photos: getAlbumPhotos('San Angelo'),
-    caption: 'Remember the Alamo. Wait thats in San Antonio...',
-  },
-  {
-    id: 'Maryland',
-    name: 'Silver Spring, MD',
-    lat: 38.9976,
-    lng: -77.0398,
-    years: '1999 - 2000',
-    photos: getAlbumPhotos('Maryland'),
-    caption: 'I always said my favorite monument was the washington monument and my favorite place was the "grassy mall". Mom and I took the metro every day to get me to daycare. I remember when family came to visit and I was showing them how to operate the metro ticket booth, they were rather impressed.',
-  },
-  {
-    id: 'Wichita',
-    name: 'Wichita, KS',
-    lat: 37.666,
-    lng: -97.22,
-    years: '1998 - 1999',
-    photos: getAlbumPhotos('Wichita'),
-  },
-  {
-    id: 'Alabama',
-    name: 'Auburn, AL',
-    lat: 32.609,
-    lng: -85.482,
-    years: '1997 - 1998',
-    photos: getAlbumPhotos('Auburn'),
-    caption:
-      'Not really sure what went on here, to be honest! I Was 2. And we were only here for like a year. Air Force stuff.',
-  },
-  {
-    id: 'Germany',
-    name: 'Wurzburg, Germany',
-    lat: 49.8773,
-    lng: 10.0875,
-    years: 'Birth (1995) - 1996',
-    photos: getAlbumPhotos('Germany'),
-    caption: 'I was born at a very early age, on a US base in Wurzburg, Germany.',
-  },
-];
-
-const PLACES_TRAVELED = [
-  {
-    id: 'San Antonio',
-    name: 'San Antonio',
-    lat: 29.422887,
-    lng: -98.486266,
-    years: 'Trip 2009 & USAF boot camp 2017',
-    photos: getAlbumPhotos('San Antonio'),
-    caption: 'My late grandma Becky lived in San Antonio, and also Air Force boot camp is based here.',
-  },
-  {
-    id: 'Michigan',
-    name: 'Michigan trip',
-    lat: 43.949154,
-    lng: -83.276714,
-    years: '2008',
-    photos: getAlbumPhotos('Michigan trip'),
-    caption: 'Vacation in Caseville, MI. Massive week for the cousins.',
-  },
-
-  {
-    id: 'Niagara Falls',
-    name: 'Niagara trip',
-    lat: 43.09,
-    lng: -79.047,
-    years: '2010',
-    photos: getAlbumPhotos('Niagara'),
-    caption: 'Family trip to Niagara falls while we lived in Ohio. My little brother kept trying to climb over the railings, had us all scared half to death.',
-  },
-  {
-    id: 'Normandy France',
-    name: 'Normandy France',
-    lat: 49.334080,
-    lng: -0.563171,
-    years: 'Trip 2007',
-    photos: getAlbumPhotos('Normandy France'),
-    caption: 'Camping trip with my dad and friend Andrew. My dad is a WWII buff and we toured many of the historic sites of the war. Here is me and Andrew crawling behind enemy lines.',
-  },
-  {
-    id: 'Paris',
-    name: 'Paris',
-    lat: 48.858210,
-    lng: 2.294948,
-    years: 'Trip 2007',
-    photos: getAlbumPhotos('Paris'),
-    caption: 'Visited France a couple of times, one for a wedding and again for the sights of Paris.',
-  },
-  {
-    id: 'Switzerland',
-    name: 'Switzerland trip',
-    lat: 46.6598,
-    lng: 7.8348,
-    years: 'Trip 2006',
-    photos: getAlbumPhotos('Switzerland'),
-    caption: 'These hills are, in fact, alive.',
-  },
-  {
-    id: 'Venice',
-    name: 'Venice',
-    lat: 45.434126,
-    lng: 12.339216,
-    years: 'Multiple trips 2004-2007, and later in 2018',
-    photos: getAlbumPhotos('Venice'),
-    caption: 'One of my most iconic quotes that my mom likes to laugh about is when we were deciding what we would do when my cousin came to visit us in Italy, and my mom said we should obviously take them to see Venice, to which I sighed and said, "I think I\'ve seen Venice enough times."',
-  },
-  {
-    id: 'Canary Islands',
-    name: 'Canary Islands',
-    lat: 28.291565,
-    lng: -16.629129,
-    years: 'Trip 2007',
-    photos: getAlbumPhotos('Canary Islands'),
-    caption: 'Family vacation to the Canary Islands. Funnily enough, the main thing I remember about this trip is slipping on the pool stairs and landing on my shins and screaming "I\'m dead!!!", a dramatic performance that everyone within earshot gathered to witness.',
-  },
-  {
-    id: 'Monterey trip',
-    name: 'Monterey Trip, CA',
-    lat: 36.598,
-    lng: -121.896,
-    years: '2003',
-    photos: getAlbumPhotos('Monterey Trip'),
-    caption: 'Came here when we were living in Las Vegas. Pivotal moment of my life where I decided I wanted to become a "fish feeder" when I grow up, referring to the scuba diver who performed a fish feeding show for us in the kelp forest exhibit at the Monterey Bay Aquarium.',
-  },
-  {
-    id: 'Zion',
-    name: 'Zion, UT',
-    lat: 37.2978,
-    lng: -113.0287,
-    years: '2002',
-    photos: getAlbumPhotos('Zion'),
-    caption: 'Trip to Zion National Park. Somewhere I have more pictures of this trip, but for now here is exactly one I could find.',
-  },
-];
+function bindPinTooltip(marker: any, place: { name: string; years?: string }) {
+  marker.bindTooltip(getPinTooltipLabel(place), {
+    direction: 'top',
+    offset: [0, -36],
+    opacity: 1,
+    className: 'map-pin-tooltip',
+  });
+}
 
 const ZOOM_START = 3;
 const ZOOM_HOME = 5;
-type MapPlace = (typeof PLACES_LIVED)[number] | (typeof PLACES_TRAVELED)[number];
-type PlaceCategory = 'lived' | 'trip';
-type TimelineEntry = {
-  place: MapPlace;
-  category: PlaceCategory;
+const PREVIEW_FLY_DURATION = 2.2;
+const PREVIEW_DWELL_MS = 6000;
+const PREVIEW_START_DELAY_MS = 10000;
+
+type ExpandMode = 'fullscreen' | 'modal';
+
+type PortfolioMapProps = {
+  expandMode?: ExpandMode;
+  embedded?: boolean;
 };
+
 type WaypointPanDetail = {
   lat: number;
   lng: number;
   zoom?: number;
 };
 
-function getTimelineEntryKey(entry: TimelineEntry) {
-  return `${entry.category}-${entry.place.id}`;
-}
-
-function extractYearRange(years?: string) {
-  if (!years) return { startYear: null as number | null, endYear: null as number | null };
-
-  const normalized = years.toLowerCase();
-  const matches = years.match(/\d{4}/g) ?? [];
-  const parsedYears = matches.map((value) => Number(value)).filter((value) => Number.isFinite(value));
-
-  const startYear = parsedYears.length > 0 ? parsedYears[0] : null;
-  let endYear = parsedYears.length > 1 ? parsedYears[parsedYears.length - 1] : startYear;
-  if (normalized.includes('present')) {
-    endYear = new Date().getFullYear();
-  }
-
-  return { startYear, endYear };
-}
-
-function useESTClock() {
-  const [time, setTime] = useState('');
-  const [isDaytime, setIsDaytime] = useState(true);
-
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-
-      const est = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/New_York',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-      }).format(now);
-
-      const hour = parseInt(
-        new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/New_York',
-          hour: 'numeric',
-          hour12: false,
-        }).format(now)
-      );
-
-      setTime(est + ' EST');
-      setIsDaytime(hour >= 6 && hour < 20);
-    };
-
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  return { time, isDaytime };
-}
-
-export default function PortfolioMap() {
+export default function PortfolioMap({ expandMode = 'fullscreen', embedded = false }: PortfolioMapProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const expandedRef = useRef(false);
-  const thumbnailRowRef = useRef<HTMLDivElement>(null);
-  const thumbnailButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const timelineRowRef = useRef<HTMLDivElement>(null);
   const timelineCardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const previewIndexRef = useRef(-1);
+  const tourStartedRef = useRef(false);
 
   const [expanded, setExpanded] = useState(false);
   const [activePlace, setActivePlace] = useState<MapPlace | null>(null);
   const [activePlaceCategory, setActivePlaceCategory] = useState<PlaceCategory>('lived');
-  const [panelVisible, setPanelVisible] = useState(false);
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
+  const [albumOpen, setAlbumOpen] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(-1);
+  const [previewHovered, setPreviewHovered] = useState(false);
 
-  const { time, isDaytime } = useESTClock();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const timelineEntries = useMemo(() => {
     const livedEntries = PLACES_LIVED.map((place, originalIndex) => ({
       place,
@@ -366,6 +103,12 @@ export default function PortfolioMap() {
     ? timelineEntries.findIndex((entry) => getTimelineEntryKey(entry) === activeTimelineKey)
     : -1;
 
+  const homePreviewPlace = PLACES_LIVED.find((place) => place.id === 'Denton') ?? null;
+  const previewChipPlace =
+    previewIndex >= 0 && timelineEntries[previewIndex]
+      ? timelineEntries[previewIndex].place
+      : homePreviewPlace;
+
   function setMapInteractivity(isInteractive: boolean) {
     const map = mapRef.current;
     if (!map) return;
@@ -399,35 +142,162 @@ export default function PortfolioMap() {
   }
 
   useEffect(() => {
-    expandedRef.current = expanded;
-  }, [expanded]);
+    expandedRef.current = expanded || embedded;
+    if (expanded) {
+      tourStartedRef.current = false;
+    } else if (!embedded) {
+      setAlbumOpen(false);
+      setActivePlace(null);
+      if (expandMode === 'modal') {
+        previewIndexRef.current = -1;
+        setPreviewIndex(-1);
+      }
+    }
+  }, [expanded, expandMode, embedded]);
 
   useEffect(() => {
-    document.body.classList.toggle('map-expanded', expanded);
+    if (
+      expanded ||
+      embedded ||
+      expandMode !== 'modal' ||
+      !mapReady ||
+      prefersReducedMotion ||
+      previewHovered ||
+      !timelineEntries.length
+    ) {
+      return;
+    }
+
+    let startTimeout: ReturnType<typeof setTimeout> | undefined;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
+    const stepToIndex = (index: number) => {
+      previewIndexRef.current = index;
+      setPreviewIndex(index);
+      const entry = timelineEntries[index];
+      if (entry) flyToPreviewPlace(entry.place);
+    };
+
+    const advance = () => {
+      const next = (previewIndexRef.current + 1) % timelineEntries.length;
+      stepToIndex(next);
+    };
+
+    const beginInterval = () => {
+      intervalId = setInterval(advance, PREVIEW_DWELL_MS);
+    };
+
+    if (!tourStartedRef.current) {
+      startTimeout = setTimeout(() => {
+        tourStartedRef.current = true;
+        stepToIndex(0);
+        beginInterval();
+      }, PREVIEW_START_DELAY_MS);
+    } else {
+      beginInterval();
+    }
+
+    return () => {
+      clearTimeout(startTimeout);
+      clearInterval(intervalId);
+    };
+  }, [
+    expanded,
+    embedded,
+    expandMode,
+    mapReady,
+    prefersReducedMotion,
+    previewHovered,
+    timelineEntries,
+  ]);
+
+  useEffect(() => {
+    const useFullscreenBody = expanded && expandMode === 'fullscreen';
+    const useModalBody = expanded && expandMode === 'modal';
+    document.body.classList.toggle('map-expanded', useFullscreenBody);
+    document.body.classList.toggle('map-modal-open', useModalBody);
     return () => {
       document.body.classList.remove('map-expanded');
+      document.body.classList.remove('map-modal-open');
     };
-  }, [expanded]);
+  }, [expanded, expandMode]);
+
+  useEffect(() => {
+    if (!mapReady || !wrapperRef.current) return;
+    wrapperRef.current.closest('.design-c__map-panel__inner')?.classList.add('map-ready');
+
+    const panel = wrapperRef.current.closest('.design-c__map-panel__inner');
+    if (!panel) return;
+
+    const observer = new ResizeObserver(() => {
+      mapRef.current?.invalidateSize();
+    });
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [mapReady]);
 
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
 
-    if (expanded) {
+    if (expanded && expandMode === 'fullscreen') {
       el.style.position = 'fixed';
       el.style.inset = '0';
+      el.style.top = '';
+      el.style.left = '';
+      el.style.transform = '';
+      el.style.width = '';
+      el.style.maxWidth = '';
       el.style.height = '100vh';
+      el.style.maxHeight = '';
       el.style.zIndex = '9999';
-    } else {
-      el.style.position = 'relative';
+      el.style.borderRadius = '';
+      el.style.overflow = '';
+      el.style.boxShadow = '';
+    } else if (expanded && expandMode === 'modal') {
+      el.style.position = 'fixed';
       el.style.inset = '';
+      el.style.top = '50%';
+      el.style.left = '50%';
+      el.style.transform = 'translate(-50%, -50%)';
+      el.style.width = 'min(94vw, 1000px)';
+      el.style.maxWidth = 'min(94vw, 1000px)';
+      el.style.height = 'min(82vh, 720px)';
+      el.style.maxHeight = 'min(82vh, 720px)';
+      el.style.zIndex = '9999';
+      el.style.borderRadius = '16px';
+      el.style.overflow = 'hidden';
+      el.style.boxShadow = '0 24px 80px rgba(30, 45, 28, 0.35)';
+    } else {
+      el.style.position = '';
+      el.style.inset = '';
+      el.style.top = '';
+      el.style.left = '';
+      el.style.right = '';
+      el.style.bottom = '';
+      el.style.transform = '';
+      el.style.width = '';
+      el.style.maxWidth = '';
       el.style.height = '';
+      el.style.maxHeight = '';
       el.style.zIndex = '';
+      el.style.borderRadius = '';
+      el.style.overflow = '';
+      el.style.boxShadow = '';
     }
 
     setTimeout(() => mapRef.current?.invalidateSize(), 50);
-    setMapInteractivity(expanded);
-  }, [expanded]);
+    setMapInteractivity(expanded || embedded);
+  }, [expanded, expandMode, embedded]);
+
+  useEffect(() => {
+    if (!expanded || expandMode !== 'modal') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !albumOpen) setExpanded(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [expanded, expandMode, albumOpen]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -455,6 +325,19 @@ export default function PortfolioMap() {
         .leaflet-container {
           background: #eef2ef;
         }
+        .leaflet-tooltip.map-pin-tooltip {
+          background: #f5f0e6;
+          border: 1px solid #4a7c59;
+          color: #1e3d24;
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding: 0.35rem 0.65rem;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(44, 62, 42, 0.15);
+        }
+        .leaflet-tooltip-top.map-pin-tooltip::before {
+          border-top-color: #4a7c59;
+        }
       `;
       document.head.appendChild(style);
     }
@@ -462,6 +345,9 @@ export default function PortfolioMap() {
     const script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
     script.onload = () => initMap();
+    script.onerror = () => {
+      console.error('[PortfolioMap] Failed to load Leaflet from CDN');
+    };
     document.head.appendChild(script);
 
     return () => {
@@ -469,6 +355,8 @@ export default function PortfolioMap() {
         mapRef.current.remove();
         mapRef.current = null;
       }
+      setMapReady(false);
+      tourStartedRef.current = false;
     };
   }, []);
 
@@ -484,7 +372,8 @@ export default function PortfolioMap() {
     });
 
     mapRef.current = map;
-    setMapInteractivity(false);
+    setMapReady(true);
+    setMapInteractivity(embedded);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -521,11 +410,13 @@ export default function PortfolioMap() {
 
     const marker = L.marker([ME.home.lat, ME.home.lng], { icon }).addTo(map);
 
+    const home = PLACES_LIVED.find((p) => p.lat === ME.home.lat && p.lng === ME.home.lng);
+    if (home) bindPinTooltip(marker, home);
+
     marker.on('click', () => {
       if (!expandedRef.current) return;
-      const home = PLACES_LIVED.find((p) => p.lat === ME.home.lat && p.lng === ME.home.lng);
       if (home) {
-        focusPlace(home, 'lived');
+        openPlaceAlbum(home, 'lived');
       }
     });
 
@@ -551,15 +442,18 @@ export default function PortfolioMap() {
         html: `
           <svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 20 12 20S24 21 24 12C24 5.373 18.627 0 12 0z" fill="#8b2725"/>
-            <circle cx="12" cy="12" r="5" fill="white" opacity="0.9"/>
+            <path d="M6 11.6 L12 6.5 L18 11.6 Z" fill="white"/>
+            <rect x="7.6" y="11.2" width="8.8" height="6" fill="white"/>
+            <rect x="10.6" y="13" width="2.8" height="4.2" fill="#8b2725"/>
           </svg>`,
       });
 
       const marker = L.marker([place.lat, place.lng], { icon }).addTo(map);
+      bindPinTooltip(marker, place);
 
       marker.on('click', () => {
         if (!expandedRef.current) return;
-        focusPlace(place, 'lived');
+        openPlaceAlbum(place, 'lived');
       });
 
       const el = marker.getElement();
@@ -583,15 +477,21 @@ export default function PortfolioMap() {
         html: `
           <svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 20 12 20S24 21 24 12C24 5.373 18.627 0 12 0z" fill="#3b82f6"/>
-            <circle cx="12" cy="12" r="5" fill="white" opacity="0.9"/>
+            <path d="M6 15 L7.4 11.4 H16.6 L18 15 Z" fill="white"/>
+            <rect x="5.6" y="14.2" width="12.8" height="2.6" rx="0.7" fill="white"/>
+            <circle cx="8.6" cy="16.8" r="1.5" fill="white"/>
+            <circle cx="15.4" cy="16.8" r="1.5" fill="white"/>
+            <circle cx="8.6" cy="16.8" r="0.65" fill="#3b82f6"/>
+            <circle cx="15.4" cy="16.8" r="0.65" fill="#3b82f6"/>
           </svg>`,
       });
 
       const marker = L.marker([place.lat, place.lng], { icon }).addTo(map);
+      bindPinTooltip(marker, place);
 
       marker.on('click', () => {
         if (!expandedRef.current) return;
-        focusPlace(place, 'trip');
+        openPlaceAlbum(place, 'trip');
       });
 
       const el = marker.getElement();
@@ -606,65 +506,31 @@ export default function PortfolioMap() {
     });
   }
 
-  function closePanel() {
-    setPanelVisible(false);
-    setGalleryOpen(false);
-    setSelectedPhoto(null);
-    setTimeout(() => setActivePlace(null), 300);
+  function closeAlbum() {
+    setAlbumOpen(false);
+    setActivePlace(null);
   }
 
-  function openGallery() {
-    if (activePlace && 'photos' in activePlace && activePlace.photos.length > 0) {
-      setSelectedPhoto(activePlace.photos[0]);
-      setGalleryOpen(true);
-    }
-  }
-
-  function handleThumbnailWheel(e: React.WheelEvent<HTMLDivElement>) {
-    if (!thumbnailRowRef.current) return;
-  
-    e.preventDefault();
-    thumbnailRowRef.current.scrollLeft += e.deltaY;
-  }
-
-  function showNextPhoto() {
-    if (!activePlace || !('photos' in activePlace) || !selectedPhoto) return;
-  
-    const currentIndex = activePlace.photos.indexOf(selectedPhoto);
-    const nextIndex = (currentIndex + 1) % activePlace.photos.length;
-  
-    setSelectedPhoto(activePlace.photos[nextIndex]);
-  }
-  
-  function showPreviousPhoto() {
-    if (!activePlace || !('photos' in activePlace) || !selectedPhoto) return;
-  
-    const currentIndex = activePlace.photos.indexOf(selectedPhoto);
-    const previousIndex =
-      (currentIndex - 1 + activePlace.photos.length) % activePlace.photos.length;
-  
-    setSelectedPhoto(activePlace.photos[previousIndex]);
-  }
-
-  function focusPlace(place: MapPlace, category: PlaceCategory = 'lived') {
+  function openPlaceAlbum(place: MapPlace, category: PlaceCategory = 'lived') {
     setActivePlace(place);
     setActivePlaceCategory(category);
-    setPanelVisible(true);
-    setGalleryOpen(false);
-    setSelectedPhoto(null);
-
-    mapRef.current?.flyTo([place.lat, place.lng], 10, {
-      animate: true,
-      duration: 1.2,
-    });
+    setAlbumOpen(true);
   }
 
   function panToPlace(place: MapPlace, category: PlaceCategory = 'lived') {
     setActivePlace(place);
     setActivePlaceCategory(category);
-    mapRef.current?.flyTo([place.lat, place.lng], 10, {
+    const zoom = mapRef.current?.getZoom() ?? ZOOM_HOME;
+    mapRef.current?.flyTo([place.lat, place.lng], zoom, {
       animate: true,
       duration: 1.2,
+    });
+  }
+
+  function flyToPreviewPlace(place: MapPlace) {
+    mapRef.current?.flyTo([place.lat, place.lng], ZOOM_HOME, {
+      animate: true,
+      duration: PREVIEW_FLY_DURATION,
     });
   }
 
@@ -736,30 +602,18 @@ export default function PortfolioMap() {
     function handleKeyDown(e: KeyboardEvent) {
       if (!expandedRef.current) return;
 
-      if (galleryOpen && e.key === 'Escape') {
-        setGalleryOpen(false);
+      if (albumOpen && e.key === 'Escape') {
+        closeAlbum();
         return;
       }
 
-      if (galleryOpen && e.key === 'ArrowRight') {
-        e.preventDefault();
-        showNextPhoto();
-        return;
-      }
-
-      if (galleryOpen && e.key === 'ArrowLeft') {
-        e.preventDefault();
-        showPreviousPhoto();
-        return;
-      }
-
-      if (!galleryOpen && e.key === 'ArrowRight') {
+      if (!albumOpen && e.key === 'ArrowRight') {
         e.preventDefault();
         navigatePlaces(1);
         return;
       }
 
-      if (!galleryOpen && e.key === 'ArrowLeft') {
+      if (!albumOpen && e.key === 'ArrowLeft') {
         e.preventDefault();
         navigatePlaces(-1);
         return;
@@ -771,118 +625,298 @@ export default function PortfolioMap() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [galleryOpen, activePlace, selectedPhoto, timelineEntries]);
+  }, [albumOpen, activePlace, timelineEntries]);
 
   useEffect(() => {
-    if (!expanded || activeTimelineIndex < 0) return;
+    if (!(expanded || embedded) || activeTimelineIndex < 0) return;
     const entry = timelineEntries[activeTimelineIndex];
     if (!entry) return;
     const cardKey = getTimelineEntryKey(entry);
     const activeCard = timelineCardRefs.current[cardKey];
     activeCard?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }, [expanded, activeTimelineIndex, timelineEntries]);
+  }, [expanded, embedded, activeTimelineIndex, timelineEntries]);
 
-  useEffect(() => {
-    if (!galleryOpen || !selectedPhoto?.src) return;
-    const thumb = thumbnailButtonRefs.current[selectedPhoto.src];
-    thumb?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }, [galleryOpen, selectedPhoto]);
+  const albumImages = activePlace
+    ? activePlace.photos.map((photo) => ({
+        src: photo.src,
+        alt: photo.caption || activePlace.name,
+        ...(photo.caption ? { caption: photo.caption } : {}),
+      }))
+    : [];
+
+  if (embedded) {
+    const activeLabel = activePlace
+      ? `${activePlace.name}${activePlace.years ? ` · ${activePlace.years}` : ''}`
+      : 'Select a place on the timeline or map';
+
+    return (
+      <div className="pm-embedded">
+        <div className="pm-embedded__timeline">
+          <button
+            type="button"
+            className="pm-embedded__tl-arrow"
+            onClick={() => nudgeTimeline(-1)}
+            aria-label="Scroll timeline left"
+          >
+            ‹
+          </button>
+          <div ref={timelineRowRef} className="pm-embedded__timeline-scroll">
+            <div className="pm-embedded__timeline-inner">
+              {timelineEntries.map((entry) => {
+                const cardKey = getTimelineEntryKey(entry);
+                const isActive = activeTimelineKey === cardKey;
+                return (
+                  <div
+                    key={cardKey}
+                    ref={(el) => {
+                      timelineCardRefs.current[cardKey] = el;
+                    }}
+                    className="pm-embedded__chip-group"
+                  >
+                    <span
+                      className={`pm-embedded__chip-years ${isActive ? 'pm-embedded__chip-years--active' : ''}`}
+                    >
+                      {entry.place.years ?? 'Unknown years'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => panToPlace(entry.place, entry.category)}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`pm-embedded__chip ${isActive ? 'pm-embedded__chip--active' : ''}`}
+                    >
+                      <span className="pm-embedded__chip-name">{entry.place.name}</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <button
+            type="button"
+            className="pm-embedded__tl-arrow"
+            onClick={() => nudgeTimeline(1)}
+            aria-label="Scroll timeline right"
+          >
+            ›
+          </button>
+        </div>
+
+        <p className="pm-embedded__label">{activeLabel}</p>
+
+        <div className="pm-embedded__stage">
+          <button
+            type="button"
+            className="pm-embedded__arrow"
+            onClick={() => navigatePlaces(-1)}
+            aria-label="Previous place"
+          >
+            ←
+          </button>
+
+          <div className="design-c__map-panel__inner pm-embedded__map">
+            {!mapReady && (
+              <div className="pm-embedded__loading" aria-hidden="true">Loading map…</div>
+            )}
+            <div ref={wrapperRef} className="absolute inset-0 w-full h-full min-h-0">
+              <div ref={containerRef} className="absolute inset-0 z-0" />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="pm-embedded__arrow"
+            onClick={() => navigatePlaces(1)}
+            aria-label="Next place"
+          >
+            →
+          </button>
+
+          <div className="pm-embedded__album">
+            {activePlace ? (
+              <>
+                <h3 className="pm-embedded__album-title">{activeLabel}</h3>
+                {activePlace.narrative ? (
+                  <p className="pm-embedded__album-intro">{activePlace.narrative}</p>
+                ) : null}
+                <AlbumGallery images={albumImages} emptyFolderHint={`src/images/albums/${activePlace.id}/`} />
+              </>
+            ) : (
+              <p className="pm-embedded__album-empty">
+                Tap a pin, a timeline place, or the arrows to see photos.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
-      <div ref={wrapperRef} className="relative w-full h-72">
+      {expanded && expandMode === 'modal' && (
+        <div
+          className="fixed inset-0 z-[9998] bg-[#1e3d24]/45 backdrop-blur-sm"
+          onClick={() => setExpanded(false)}
+          aria-hidden="true"
+        />
+      )}
+      <div
+        ref={wrapperRef}
+        className={`absolute inset-0 w-full h-full min-h-0 ${expanded && expandMode === 'modal' ? 'pt-14' : ''}`}
+        onMouseEnter={() => setPreviewHovered(true)}
+        onMouseLeave={() => setPreviewHovered(false)}
+      >
       {expanded && (
-        <div className="absolute top-4 left-4 right-4 z-30 flex items-start gap-3">
+        <>
           <button
             onClick={() => setExpanded(false)}
-            className="h-11 w-11 shrink-0 rounded-full border-2 border-[#8b2725] bg-[#f6dfd7]/95 text-[#8b2725] shadow-[0_8px_18px_rgba(79,32,29,0.24),inset_0_0_0_1px_rgba(255,244,240,0.85),inset_0_0_0_3px_rgba(139,39,37,0.15)] hover:bg-[#f3d0c3] hover:text-[#c96f4a] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c96f4a] flex items-center justify-center"
+            className={`absolute top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+              expandMode === 'modal'
+                ? 'right-4 border-2 border-[#4a7c59] bg-[#f5f0e6]/95 text-[#1e3d24] shadow-md hover:bg-[#ebe4d4] focus-visible:outline-[#4a7c59]'
+                : 'left-4 border-2 border-[#8b2725] bg-[#f6dfd7]/95 text-[#8b2725] shadow-[0_8px_18px_rgba(79,32,29,0.24),inset_0_0_0_1px_rgba(255,244,240,0.85),inset_0_0_0_3px_rgba(139,39,37,0.15)] hover:bg-[#f3d0c3] hover:text-[#c96f4a] focus-visible:outline-[#c96f4a]'
+            }`}
             aria-label="Close map"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+
           <div
-            className="min-w-0 flex-1 rounded-[2px] border border-[#2a3a4a] px-4 py-5 shadow-[0_10px_22px_rgba(42,36,28,0.12),inset_0_0_0_1px_rgba(255,252,244,0.85),inset_0_0_0_3px_#f0e4cf,inset_0_0_0_4px_#2a3a4a]"
-            style={{
-              backgroundColor: '#f4ead8',
-              backgroundImage: 'linear-gradient(165deg, #f7ecd7 0%, #efe2c8 55%, #e8d9b8 100%)',
-            }}
+            className={`absolute z-30 flex items-center gap-2 ${
+              expandMode === 'modal'
+                ? 'top-3 left-3 right-14 px-1 py-1'
+                : 'top-4 left-16 right-4 rounded-[2px] border border-[#2a3a4a] px-4 py-5 shadow-[0_10px_22px_rgba(42,36,28,0.12),inset_0_0_0_1px_rgba(255,252,244,0.85),inset_0_0_0_3px_#f0e4cf,inset_0_0_0_4px_#2a3a4a]'
+            }`}
+            style={
+              expandMode === 'fullscreen'
+                ? {
+                    backgroundColor: '#f4ead8',
+                    backgroundImage: 'linear-gradient(165deg, #f7ecd7 0%, #efe2c8 55%, #e8d9b8 100%)',
+                  }
+                : undefined
+            }
           >
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => nudgeTimeline(-1)}
-                className="h-12 w-12 shrink-0 rounded-full border border-[#bfcee4] text-[#456488] hover:border-[#3b82f6] hover:bg-[#edf5ff] hover:text-[#245ea2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b82f6]"
-                aria-label="Scroll timeline left"
-              >
-                ←
-              </button>
-              <div
-                ref={timelineRowRef}
-                onWheel={handleTimelineWheel}
-                className="flex-1 overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none]"
-              >
-                <div className="flex gap-3 min-w-max">
-                  {timelineEntries.map((entry) => {
-                    const cardKey = getTimelineEntryKey(entry);
-                    const isActive = activeTimelineKey === cardKey;
-                    return (
-                      <button
-                        key={cardKey}
-                        ref={(el) => {
-                          timelineCardRefs.current[cardKey] = el;
-                        }}
-                        type="button"
-                        onClick={() => focusPlace(entry.place, entry.category)}
-                        aria-current={isActive ? 'true' : undefined}
-                        className={`shrink-0 rounded-lg border px-4 py-5 text-left transition ${
-                          isActive
-                            ? entry.category === 'trip'
-                              ? 'border-[#3b82f6] bg-[#edf5ff] shadow-[0_0_0_1px_rgba(59,130,246,0.35),0_10px_20px_rgba(37,99,235,0.2)] ring-1 ring-[#3b82f6]/40'
-                              : 'border-[#c96f4a] bg-[#fff7ee] shadow-[0_0_0_1px_rgba(201,111,74,0.35),0_10px_20px_rgba(201,111,74,0.18)] ring-1 ring-[#c96f4a]/40'
-                            : 'border-[#d8cfc0] bg-[#fffdf8] hover:border-[#bfcee4] hover:bg-[#f4f8ff]'
-                        }`}
-                      >
-                        <p className={`text-xs uppercase tracking-wider ${isActive ? 'text-[#4c5c6a]' : 'text-[#6b7280]'}`}>
-                          {entry.place.years ?? 'Unknown years'}
-                        </p>
-                        <p className={`mt-1 text-sm font-semibold ${isActive ? 'text-[#1f2f3e]' : 'text-[#2f3a45]'}`}>
-                          {entry.place.name}
-                        </p>
-                        <p className={`mt-1 text-xs font-semibold ${entry.category === 'trip' ? 'text-[#3b82f6]' : 'text-[#8b2725]'}`}>
+            <button
+              type="button"
+              onClick={() => nudgeTimeline(-1)}
+              className={`shrink-0 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                expandMode === 'modal'
+                  ? 'h-8 w-8 text-[#3d6b47] hover:text-[#1e3d24] focus-visible:outline-[#4a7c59]'
+                  : 'h-12 w-12 rounded-full border border-[#bfcee4] text-[#456488] hover:border-[#3b82f6] hover:bg-[#edf5ff] hover:text-[#245ea2] focus-visible:outline-[#3b82f6]'
+              }`}
+              aria-label="Scroll timeline left"
+            >
+              ←
+            </button>
+            <div
+              ref={timelineRowRef}
+              onWheel={handleTimelineWheel}
+              className="flex-1 overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none]"
+            >
+              <div className={`flex min-w-max ${expandMode === 'modal' ? 'gap-4' : 'gap-3'}`}>
+                {timelineEntries.map((entry) => {
+                  const cardKey = getTimelineEntryKey(entry);
+                  const isActive = activeTimelineKey === cardKey;
+                  return (
+                    <button
+                      key={cardKey}
+                      ref={(el) => {
+                        timelineCardRefs.current[cardKey] = el;
+                      }}
+                      type="button"
+                      onClick={() => panToPlace(entry.place, entry.category)}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`shrink-0 text-left transition ${
+                        expandMode === 'modal'
+                          ? isActive
+                            ? 'rounded-lg border border-[#4a7c59] bg-[#ebe4d4] px-2.5 py-1.5 shadow-sm ring-1 ring-[#4a7c59]/25'
+                            : 'rounded-lg border border-[#c4b89a] bg-[#f5f0e6] px-2.5 py-1.5 shadow-sm hover:border-[#a8b89a] hover:bg-[#fffdf8]'
+                          : `rounded-lg border px-4 py-5 ${
+                              isActive
+                                ? entry.category === 'trip'
+                                  ? 'border-[#3b82f6] bg-[#edf5ff] shadow-[0_0_0_1px_rgba(59,130,246,0.35),0_10px_20px_rgba(37,99,235,0.2)] ring-1 ring-[#3b82f6]/40'
+                                  : 'border-[#c96f4a] bg-[#fff7ee] shadow-[0_0_0_1px_rgba(201,111,74,0.35),0_10px_20px_rgba(201,111,74,0.18)] ring-1 ring-[#c96f4a]/40'
+                                : 'border-[#d8cfc0] bg-[#fffdf8] hover:border-[#bfcee4] hover:bg-[#f4f8ff]'
+                            }`
+                      }`}
+                    >
+                      {expandMode === 'modal' ? (
+                        <>
+                          <p className={`text-xs ${isActive ? 'font-bold text-[#1e3d24]' : 'font-medium text-[#2c3e2a]'}`}>
+                            {entry.place.name}
+                          </p>
+                          <p className={`text-[0.65rem] ${isActive ? 'text-[#2c3e2a]' : 'text-[#3d4f3a]'}`}>
+                            {entry.place.years ?? 'Unknown years'}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className={`text-xs uppercase tracking-wider ${isActive ? 'text-[#4c5c6a]' : 'text-[#6b7280]'}`}>
+                            {entry.place.years ?? 'Unknown years'}
+                          </p>
+                          <p className={`mt-1 text-sm font-semibold ${isActive ? 'text-[#1f2f3e]' : 'text-[#2f3a45]'}`}>
+                            {entry.place.name}
+                          </p>
+                        </>
+                      )}
+                      {expandMode === 'fullscreen' && (
+                        <p
+                          className={`mt-1 text-xs font-semibold ${entry.category === 'trip' ? 'text-[#3b82f6]' : 'text-[#8b2725]'}`}
+                        >
                           {entry.category === 'trip' ? 'Visited' : 'Lived'}
                         </p>
-                      </button>
-                    );
-                  })}
-                </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              <button
-                type="button"
-                onClick={() => nudgeTimeline(1)}
-                className="h-12 w-12 shrink-0 rounded-full border border-[#bfcee4] text-[#456488] hover:border-[#3b82f6] hover:bg-[#edf5ff] hover:text-[#245ea2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b82f6]"
-                aria-label="Scroll timeline right"
-              >
-                →
-              </button>
             </div>
+            <button
+              type="button"
+              onClick={() => nudgeTimeline(1)}
+              className={`shrink-0 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                expandMode === 'modal'
+                  ? 'h-8 w-8 text-[#3d6b47] hover:text-[#1e3d24] focus-visible:outline-[#4a7c59]'
+                  : 'h-12 w-12 rounded-full border border-[#bfcee4] text-[#456488] hover:border-[#3b82f6] hover:bg-[#edf5ff] hover:text-[#245ea2] focus-visible:outline-[#3b82f6]'
+              }`}
+              aria-label="Scroll timeline right"
+            >
+              →
+            </button>
           </div>
-        </div>
+        </>
       )}
       {/* Map */}
       <div ref={containerRef} className="absolute inset-0 z-0" />
 
-      {/* Clock — top left, mini only */}
-      {!expanded && (
-        <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-[#fffdf8]/85 backdrop-blur-sm rounded-full px-3 py-1.5 border border-[#bfcee4] shadow-sm">
-          <span className="text-base">{isDaytime ? '🌞' : '🌛'}</span>
-          <span className="text-xs font-medium text-[#2c567f] tabular-nums">{time}</span>
+      {/* Preview timeline chip — top, mini only */}
+      {!expanded && expandMode === 'modal' && timelineEntries[previewIndex] && (
+        <div
+          className="pointer-events-none absolute top-3 left-3 z-20 w-fit max-w-[calc(100%-1.5rem)] transition-opacity duration-200"
+          aria-live="polite"
+        >
+          <div className="design-c__map-place-card w-fit">
+            <p className="design-c__map-place-card__title">
+              {timelineEntries[previewIndex].place.name}
+            </p>
+            <p className="design-c__map-place-card__years">
+              {timelineEntries[previewIndex].place.years ?? 'Unknown years'}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Search bar — bottom center, clicks to expand */}
-      {!expanded && (
+      {/* Full-card click to expand (modal) or search bar (fullscreen) */}
+      {!expanded && expandMode === 'modal' && (
+        <button
+          type="button"
+          onClick={handleExpandClick}
+          className="absolute inset-0 z-30 cursor-pointer"
+          aria-label="Open map"
+        />
+      )}
+      {!expanded && expandMode === 'fullscreen' && (
         <button
           onClick={handleExpandClick}
           className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-20"
@@ -906,150 +940,22 @@ export default function PortfolioMap() {
         </button>
       )}
 
-      {/* Slide-in panel */}
-      <div
-        className={`absolute top-0 right-0 h-full w-80 bg-[#fffdf8] shadow-2xl z-40 flex flex-col transition-transform duration-300 border-l border-[#d8cfc0] ${
-          panelVisible ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        {activePlace && (
-          <>
-            {'photos' in activePlace && activePlace.photos.length > 0 ? (
-              <button onClick={openGallery} className="relative h-52 bg-[#ebe4d8] shrink-0 group text-left">
-                <img src={activePlace.photos[0].src} alt={activePlace.name} className="w-full h-full object-cover" />
-
-                <div className="absolute inset-0 bg-[#2f3a45]/35 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                  <span className="text-[#fffdf8] text-sm font-medium">
-                    View {activePlace.photos.length} photos
-                  </span>
-                </div>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closePanel();
-                  }}
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#fffdf8]/85 text-[#2f3a45] flex items-center justify-center hover:bg-[#fff7ee] transition-colors text-lg leading-none border border-[#d8cfc0]"
-                >
-                  ×
-                </button>
-              </button>
-            ) : (
-              <div className="relative h-52 bg-[#ebe4d8] shrink-0">
-                <img
-                  src={'photo' in activePlace && activePlace.photo ? activePlace.photo : '/images/Me.jpg'}
-                  alt={activePlace.name}
-                  className="w-full h-full object-cover"
-                />
-
-                <button
-                  onClick={closePanel}
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#fffdf8]/85 text-[#2f3a45] flex items-center justify-center hover:bg-[#fff7ee] transition-colors text-lg leading-none border border-[#d8cfc0]"
-                >
-                  ×
-                </button>
-              </div>
-            )}
-
-            <div className="p-6 flex flex-col gap-3">
-              <div>
-                <p className="text-xs uppercase tracking-widest text-[#6b7280] mb-1">
-                  📍 {activePlaceCategory === 'trip' ? 'Visited here' : 'Lived here'}
-                </p>
-                <h2 className="text-xl font-bold text-[#2f3a45]">{activePlace.name}</h2>
-                <p className="text-sm text-[#6b7280] mt-0.5">{activePlace.years}</p>
-              </div>
-
-              <p className="text-sm text-[#495563] leading-relaxed">{activePlace.caption}</p>
-
-              {'photos' in activePlace && activePlace.photos.length > 0 && (
-                <button
-                  onClick={openGallery}
-                  className="mt-2 rounded-full bg-[#c96f4a] text-[#fffdf8] text-sm font-medium py-2 hover:bg-[#b86340] transition"
-                >
-                  Open photo album
-                </button>
-              )}
-            </div>
-          </>
-        )}
       </div>
 
-      {/* Gallery modal */}
-      {galleryOpen && activePlace && 'photos' in activePlace && (
-        <div className="fixed inset-0 z-[10000] bg-[#2f3a45]/35 backdrop-blur-sm flex justify-center overflow-y-auto p-6">
-          <div className="relative mt-10 mb-10 w-full max-w-6xl bg-[#fffdf8] rounded-2xl shadow-2xl border border-[#d8cfc0] grid grid-cols-1 md:grid-cols-[1fr_320px]">
-  <button
-    onClick={() => setGalleryOpen(false)}
-    className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-[#fffdf8]/90 text-[#2f3a45] flex items-center justify-center hover:bg-[#fff7ee] transition-colors text-xl leading-none border border-[#d8cfc0]"
-    aria-label="Close gallery"
-  >
-    ×
-  </button>
-  <div className="bg-[#f6f2ea] grid grid-rows-[1fr_auto] p-4 gap-4 h-[75vh]">
-  <div className="flex items-center justify-center min-h-0">
-    {selectedPhoto && (
-      <img
-        src={selectedPhoto.src}
-        alt={selectedPhoto.caption || `${activePlace.name} photo`}
-        className="max-h-full max-w-full object-contain rounded-lg"
+      <GalleryPopoutDialog
+        open={expanded && albumOpen && !!activePlace}
+        onClose={closeAlbum}
+        title={
+          activePlace
+            ? `${activePlace.name}${activePlace.years ? ` · ${activePlace.years}` : ''}`
+            : ''
+        }
+        intro={activePlace?.narrative}
+        images={albumImages}
+        emptyFolderHint={
+          activePlace ? `src/images/albums/${activePlace.id}/` : undefined
+        }
       />
-    )}
-  </div>
-
-  <div
-  ref={thumbnailRowRef}
-  onWheel={handleThumbnailWheel}
-  className="flex gap-3 overflow-x-auto pb-2 scroll-smooth"
->
-    {activePlace.photos.map((photo) => (
-      <button
-        key={photo.src}
-        ref={(el) => {
-          thumbnailButtonRefs.current[photo.src] = el;
-        }}
-        onClick={() => setSelectedPhoto(photo)}
-        className={`shrink-0 rounded-lg overflow-hidden border transition ${
-          selectedPhoto?.src === photo.src ? 'border-[#c96f4a]' : 'border-[#d8cfc0] hover:border-[#c96f4a]'
-        }`}
-      >
-        <img
-          src={photo.src}
-          alt={`${activePlace.name} thumbnail`}
-          className="w-24 aspect-square object-cover"
-          loading="lazy"
-        />
-      </button>
-    ))}
-  </div>
-</div>
-
-            <aside className="p-5 border-l border-[#d8cfc0] flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
-              <div>
-                <p className="text-xs uppercase tracking-widest text-[#6b7280]">Photo album</p>
-                <h3 className="text-lg font-bold text-[#2f3a45]">{activePlace.name}</h3>
-                <p className="text-sm text-[#6b7280]">{activePlace.years}</p>
-              </div>
-
-              <div className="rounded-xl bg-[#f6f2ea] border border-[#d8cfc0] p-4 min-h-40">
-  <p className="text-sm text-[#495563] leading-relaxed">
-    {selectedPhoto?.caption ?? ''}
-  </p>
-</div>
-
-              <button
-                onClick={() => setGalleryOpen(false)}
-                className="mt-auto rounded-full bg-[#c96f4a] text-[#fffdf8] text-sm font-medium py-2 hover:bg-[#b86340] transition"
-              >
-                Close gallery
-              </button>
-            </aside>
-          </div>
-        </div>
-      )}
-
-      {panelVisible && !galleryOpen && <div onClick={closePanel} className="absolute inset-0 z-30 bg-[#2f3a45]/20" />}
-      </div>
     </>
   );
 }
