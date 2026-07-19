@@ -45,18 +45,18 @@ export const homeStory: HomeStory = {
   portraitAlt: 'Conner Myers',
   sentences: [
     [
-      { type: 'text', value: 'Conner always has trouble answering "So where are you from?"' },
+      { type: 'text', value: 'When people ask Conner where he\'s from, he usually shrugs.' },
     ],
     [
       { type: 'text', value: 'This is because Conner\'s lived a dozen places, give or take.' },
     ],
     [
-      { type: 'text', value: 'He made a ' },
+      { type: 'text', value: 'So he made a ' },
       { type: 'link', label: 'timeline', href: '/map', style: 'sky' },
       { type: 'text', value: ' of them for you to look at.' },
     ],
     [
-      { type: 'text', value: 'He likes to ' },
+      { type: 'text', value: 'Conner likes to ' },
       { type: 'link', label: 'garden ', href: '/garden', style: 'lime' },
       { type: 'text', value: 'and ' },
       { type: 'link', label: 'read ', href: '/reading', style: 'berry' },
@@ -81,7 +81,7 @@ export const homeStory: HomeStory = {
       { type: 'text', value: 'After that, Conner moved back home to Kansas to take care of his mother.' },
     ],
     [
-      { type: 'text', value: 'After she got better, and Conner went to work on a ' },
+      { type: 'text', value: 'Once she got better, Conner went to work on a ' },
       { type: 'link', label: 'farm ', href: '/farm', style: 'coral' },
       { type: 'text', value: 'in Arkansas.' },
     ],
@@ -91,7 +91,7 @@ export const homeStory: HomeStory = {
     //   { type: 'text', value: ' roommates.' },
     // ],
     [
-      { type: 'text', value: "He met his partner there." },
+      { type: 'text', value: "He made many friends and memories, and met his partner there." },
     ],
     [
       { type: 'text', value: "Conner now lives with his partner on Maryland's eastern shore." },
@@ -103,10 +103,10 @@ export const homeStory: HomeStory = {
       { type: 'text', value: 'Recently, Conner earned his degree in computer science (2026).' },
     ],
     [
-      { type: 'text', value: 'He is on the prowl for employment.' },
+      { type: 'text', value: 'He is now on the prowl for employment.' },
     ],
     [
-      { type: 'text', value: 'If you have any information about such things, don\'t be shy.' },
+      { type: 'text', value: 'If you have any information about such things, please let Conner know.' },
     ],
     [
       { type: 'text', value: 'He has a more detailed ' },
@@ -124,7 +124,7 @@ export const homeStory: HomeStory = {
       { type: 'email', style: 'teal' },
     ],
     [
-      { type: 'text', value: 'And that\'s all he wrote.' },
+      { type: 'text', value: 'And that\'s all Conner wrote.' },
     ],
   ],
 };
