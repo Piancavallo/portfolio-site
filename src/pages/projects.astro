@@ -15,13 +15,12 @@ import '@styles/dark-subpage.css';
             <div class="dark-subpage__content projects">
       {
         projectSections.map((section) => {
-          const isPanel = section.id === 'games' || section.id === 'trail-atlas';
+          const isPanel = section.id === 'games' || section.id === 'apps';
           const sectionClass = [
             'projects__section',
             isPanel && 'projects__section--panel',
             section.id === 'games' && 'projects__section--games',
-            section.id === 'trail-atlas' && 'projects__section--api',
-            section.id === 'looking-ahead' && 'projects__section--ahead',
+            section.id === 'apps' && 'projects__section--api',
           ]
             .filter(Boolean)
             .join(' ');
@@ -146,17 +145,6 @@ import '@styles/dark-subpage.css';
 
   .projects__section--api {
     border-left-color: #2563eb;
-  }
-
-  .projects__section--ahead {
-    margin-top: 0.5rem;
-    padding-top: 0.25rem;
-  }
-
-  .projects__section--ahead .projects__section-title {
-    font-size: 1.05rem;
-    color: #5c5348;
-    font-weight: 500;
   }
 
   .projects__section-title {

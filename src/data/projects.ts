@@ -32,6 +32,23 @@ export const STATUS_LABEL: Record<ProjectStatus, string> = {
 
 export const projectSections: ProjectSection[] = [
   {
+    id: 'apps',
+    title: 'Apps',
+    intro: 'National Parks explorer built with the NPS API.',
+    projects: [
+      {
+        id: 'trail-atlas-api',
+        title: 'Trail Atlas',
+        summary:
+          'A React + TypeScript app for exploring U.S. National Parks via the NPS API — routing, React Query, and API-ready architecture.',
+        status: 'wip',
+        playUrl: 'https://trail-atlas.netlify.app/',
+        playLabel: 'Open app',
+        imageSrc: '/images/NPS_API.jpg',
+      },
+    ],
+  },
+  {
     id: 'games',
     title: 'Games',
     intro: 'Small Unity experiments. More coming once I push a few repos to GitHub.',
@@ -69,49 +86,6 @@ export const projectSections: ProjectSection[] = [
         itchEmbedSrc: 'https://itch.io/embed-upload/17956928?color=333333',
         itchEmbedWidth: 640,
         itchEmbedHeight: 380,
-      },
-      {
-        id: 'game-wip',
-        title: 'More games',
-        summary: 'Additional prototypes waiting to be cleaned up and pushed to GitHub.',
-        status: 'wip',
-      },
-    ],
-  },
-  {
-    id: 'trail-atlas',
-    title: 'Trail Atlas',
-    intro: 'National Parks explorer built with the NPS API.',
-    projects: [
-      {
-        id: 'trail-atlas-api',
-        title: 'Trail Atlas',
-        summary:
-          'A React + TypeScript app for exploring U.S. National Parks via the NPS API — routing, React Query, and API-ready architecture.',
-        status: 'wip',
-        playUrl: 'https://trail-atlas.netlify.app/',
-        playLabel: 'Open app',
-        imageSrc: '/images/NPS_API.jpg',
-      },
-    ],
-  },
-  {
-    id: 'looking-ahead',
-    title: 'Looking ahead',
-    intro: 'Ideas and tools I want to build next — especially anything that helps in the garden.',
-    projects: [
-      {
-        id: 'garden-tools',
-        title: 'Garden helpers',
-        summary:
-          'Small apps and scripts to help with backyard gardening — planting, watering, and keeping track of what is growing.',
-        status: 'planned',
-      },
-      {
-        id: 'future-misc',
-        title: 'Whatever comes next',
-        summary: 'Open slot for the next fun problem worth coding.',
-        status: 'planned',
       },
     ],
   },
