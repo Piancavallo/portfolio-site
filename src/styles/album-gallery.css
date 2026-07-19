@@ -87,3 +87,66 @@
 .album-gallery-empty code {
   font-size: 0.75rem;
 }
+
+.album-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.album-lightbox__nav:hover,
+.album-lightbox__nav:focus-visible {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.65);
+  outline: none;
+}
+
+.album-lightbox__nav--prev {
+  left: 0.75rem;
+}
+
+.album-lightbox__nav--next {
+  right: 0.75rem;
+}
+
+.album-lightbox__nav--dark {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ededed;
+}
+
+.album-lightbox__nav--dark:hover,
+.album-lightbox__nav--dark:focus-visible {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (min-width: 640px) {
+  .album-lightbox__nav {
+    width: 3.25rem;
+    height: 3.25rem;
+    font-size: 2.25rem;
+  }
+
+  .album-lightbox__nav--prev {
+    left: 1.25rem;
+  }
+
+  .album-lightbox__nav--next {
+    right: 1.25rem;
+  }
+}

@@ -120,7 +120,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     title: 'Eastern Shore',
     role: 'Partner & Developer',
     narrative:
-      'I live on Maryland\'s eastern shore with my partner. Quiet water, long walks, and a good desk setup for building things.',
+      'I live on Maryland\'s eastern shore with my partner and her family. Backyard garden, family dinners, weekly movie nights, and camping trips. I\'m grateful to be part of this family.',
     locationLabel: 'DENTON, MARYLAND',
     geo: 'US-MD',
     marker: { x: 0.78, y: 0.52 }, // Easton / Eastern Shore
@@ -136,7 +136,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     role: 'Farmhand',
     org: 'Dripping Springs Garden',
     narrative:
-      'Worked as a volunteer farmhand through summer into late fall. Made some good memories and friends here.',
+      'Broke a lease and pivoted last-second to work as a volunteer farmhand through summer into late fall. Really great decision, actually. Made some good friends and memories.',
     locationLabel: 'FAYETTEVILLE, ARKANSAS',
     geo: 'US-AR',
     marker: { x: 0.42, y: 0.35 },
@@ -152,7 +152,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     title: 'Home Base',
     role: 'Caregiver',
     narrative:
-      'Moved back home to Kansas after the Air Force to take care of my mom. Quieter days, family close by, and a stretch of life that asked for patience more than anything else.',
+      'Kansas was home base throughout a life of bouncing around Air Force bases. Lots of 4th of Julys and holidays with the cousins. In 2021, right as my enlistment contract ended, my mom had a stroke, so I moved back home to take care of her for a little over 2 years. So thankful for my family who all came together to get through this period of time.',
     locationLabel: 'KANSAS',
     geo: 'US-KS',
     marker: { x: 0.52, y: 0.42 },
@@ -168,7 +168,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     role: 'Space Systems Operator',
     org: 'United States Air Force',
     narrative:
-      'Four years at Peterson AFB beneath Pikes Peak. Long shifts, cold mornings, and weekends exploring the Front Range.',
+      'Four years at Peterson AFB beneath Pikes Peak. Wasn\'t allowed a phone or camera at my place of work so not too many photos to show aside from trips to the mountains.',
     locationLabel: 'COLORADO SPRINGS, COLORADO',
     geo: 'US-CO',
     marker: { x: 0.60, y: 0.54 }, // Colorado Springs
@@ -182,7 +182,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     photos: getAlbumPhotos('Monterey'),
     title: 'Coastal California',
     narrative:
-      'Middle school on the Monterey Peninsula. Foggy mornings, tide pools, and the aquarium becoming a second home.',
+      'Finished high school as a homeschooler and worked at the Monterey Bay Aquarium. Ironically I was more outgoing during this time than in any public school I\'d attended.',
     locationLabel: 'MONTEREY, CALIFORNIA',
     geo: 'US-CA',
     marker: { x: 0.20, y: 0.55 }, // Monterey coast
@@ -196,7 +196,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     photos: getAlbumPhotos('Ohio'),
     title: 'Midwest Roots',
     narrative:
-      'Four years in Centerville. Soccer teams, snow days, and the kind of suburban childhood that feels permanent in memory.',
+      'Middle school and freshman year of highschool. Played soccer and tennis and spent more time at my best friend John Paul\'s house than my own. To this day I\'m practically unbeatable at smash bros.',
     locationLabel: 'CENTERVILLE, OHIO',
     geo: 'US-OH',
     marker: { x: 0.18, y: 0.62 }, // Dayton area
@@ -211,7 +211,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     title: 'Molti Amici',
     role: 'Student',
     narrative:
-      'Attended local Italian school where I became fluent and made "molti amici"!',
+      'Attended local Italian school where I became fluent in Italian and made "molti amici"! Definitely my go-to fun fact for ice-breakers. Cousin Grant came to visit too! He definitely got the luckiest visit between his brothers.',
     locationLabel: 'SAN MARTINO, ITALY',
     geo: 'IT',
     marker: { x: 0.62, y: 0.20 }, // slightly north of Venice
@@ -225,7 +225,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     photos: getAlbumPhotos('Vegas'),
     title: 'Desert Days',
     narrative:
-      'Early elementary school in the Mojave. Pool parties, red rocks on weekends, and learning that 110°F is just weather.',
+      'From only child to older brother! We used to go see the family friendly shows downtown. There was a pirate ship battle, animal exhibits, and my favorite was the erupting volcano. Cousin Dean came to visit, too!',
     locationLabel: 'LAS VEGAS, NEVADA',
     geo: 'US-NV',
     marker: { x: 0.78, y: 0.84 }, // Las Vegas
@@ -237,8 +237,8 @@ export const PLACES_LIVED: PlaceEntry[] = [
     lng: -100.4,
     years: '2000 - 2001',
     photos: getAlbumPhotos('San Angelo'),
-    title: 'West Texas Year',
-    narrative: 'Remember the Alamo. Wait thats in San Antonio...',
+    title: 'San Angelo',
+    narrative: 'Remember the Alamo!!... I don\'t know what else to put here. It was hot. Some kid named Austin came to my house and broke my bionicle toys.',
     locationLabel: 'SAN ANGELO, TEXAS',
     geo: 'US-TX',
     marker: { x: 0.42, y: 0.52 },
@@ -250,9 +250,9 @@ export const PLACES_LIVED: PlaceEntry[] = [
     lng: -77,
     years: '1999 - 2000',
     photos: getAlbumPhotos('Maryland'),
-    title: 'Capital Suburbs',
+    title: 'Silver Spring, Maryland',
     narrative:
-      'I always said my favorite monument was the washington monument and my favorite place was the "grassy mall". Mom and I took the metro every day to get me to daycare.',
+      'My favorite monument was always the Washington monument and my favorite place was the "grassy mall". Mom and I took the metro every day to get to my daycare, to the point that I would be the one showing my family visiting from Kansas how to get their tickets. "Keep walking, if you want to see the mall, keep walking..."',
     locationLabel: 'SILVER SPRING, MARYLAND',
     geo: 'US-MD',
     marker: { x: 0.40, y: 0.58 }, // DC / Silver Spring
@@ -264,9 +264,9 @@ export const PLACES_LIVED: PlaceEntry[] = [
     lng: -97.2,
     years: '1998 - 1999',
     photos: getAlbumPhotos('Wichita'),
-    title: 'Heartland Stopover',
+    title: 'Wichita',
     narrative:
-      'A brief year in Wichita before the next PCS orders came through. Early memories of prairie skies and family close by.',
+      'A brief year in Wichita before next PCS orders came through. Could only find this one picture of me on a toy tricycle on the front porch of our apartment. In hindsight, this was the first of my many bicycle adventures.',
     locationLabel: 'WICHITA, KANSAS',
     geo: 'US-KS',
     marker: { x: 0.48, y: 0.55 },
@@ -278,9 +278,9 @@ export const PLACES_LIVED: PlaceEntry[] = [
     lng: -85.4,
     years: '1997 - 1998',
     photos: getAlbumPhotos('Auburn'),
-    title: 'Deep South Year',
+    title: 'Sweet Home Alabama',
     narrative:
-      'Not really sure what went on here, to be honest! I was 2. And we were only here for like a year. Air Force stuff.',
+      'Not really sure what went on here, to be honest! I was like 2. And we were only here for like a year. Air Force stuff.',
     locationLabel: 'AUBURN, ALABAMA',
     geo: 'US-AL',
     marker: { x: 0.55, y: 0.38 },
@@ -293,7 +293,7 @@ export const PLACES_LIVED: PlaceEntry[] = [
     years: 'Birth (1995) - 1996',
     photos: getAlbumPhotos('Germany'),
     title: 'The Beginning',
-    narrative: 'I was born at a very early age, on a US base in Wurzburg, Germany.',
+    narrative: 'I was born at a very early age, on a US military base in Wurzburg, Germany.',
     locationLabel: 'WURZBURG, GERMANY',
     geo: 'DE',
     marker: { x: 0.52, y: 0.48 },
