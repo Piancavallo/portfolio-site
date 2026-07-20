@@ -4,9 +4,11 @@
   "version": "0.0.1",
   "scripts": {
     "convert-heic": "node scripts/convert-heic.mjs",
-    "predev": "node scripts/convert-heic.mjs",
+    "optimize-albums": "node scripts/optimize-album-images.mjs",
+    "create-album": "node scripts/createAlbum.mjs",
+    "predev": "node scripts/convert-heic.mjs && node scripts/optimize-album-images.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/convert-heic.mjs",
+    "prebuild": "node scripts/convert-heic.mjs && node scripts/optimize-album-images.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "heic-convert": "^2.1.0",
+    "sharp": "^0.33.5",
     "svg-path-bbox": "^2.1.0"
   }
 }

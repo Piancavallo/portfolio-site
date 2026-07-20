@@ -19,6 +19,7 @@ const entries = getLivedTimelineEntries();
       btn.addEventListener('click', () => {
         const id = btn.dataset.albumId;
         if (!id) return;
+        (window as Window & { __placesPendingAlbumId?: string }).__placesPendingAlbumId = id;
         window.dispatchEvent(new CustomEvent('places:open-album', { detail: { id } }));
       });
     });

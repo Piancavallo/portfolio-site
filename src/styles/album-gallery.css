@@ -135,6 +135,221 @@
   background: rgba(255, 255, 255, 0.22);
 }
 
+/* Lightbox overlay base */
+.album-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.album-lightbox--default,
+.album-lightbox--polaroid {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.album-lightbox--dark {
+  background: rgba(0, 0, 0, 0.88);
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+}
+
+.album-lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  margin: 0;
+  padding: 0 0.5rem;
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.album-lightbox__close:hover,
+.album-lightbox__close:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+.album-lightbox__close--dark {
+  color: #ededed;
+}
+
+.album-lightbox__reveal {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.album-lightbox__reveal--ready {
+  opacity: 1;
+}
+
+/* Dark variant content */
+.album-lightbox__dark-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(96vw, 1100px);
+  max-height: 92vh;
+  overflow-y: auto;
+  cursor: default;
+}
+
+.album-lightbox__dark-image {
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+}
+
+.album-lightbox__dark-caption {
+  margin: 1.25rem 0 0.5rem;
+  width: 100%;
+  max-width: 40rem;
+  padding: 0 0.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #c8c4bc;
+}
+
+/* Default lightbox (map, farm, etc.) */
+.album-lightbox__default-split {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: min(95vw, 1100px);
+  max-height: 90vh;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  cursor: default;
+}
+
+.album-lightbox__default-media {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.75rem 1rem;
+}
+
+.album-lightbox__default-media img {
+  max-height: 50vh;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.album-lightbox__default-caption {
+  flex-shrink: 0;
+  overflow-y: auto;
+  background: #fffdf8;
+  color: #3d4f3a;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.album-lightbox__default-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  cursor: default;
+}
+
+@media (min-width: 640px) {
+  .album-lightbox__default-split {
+    flex-direction: row;
+  }
+
+  .album-lightbox__default-media img {
+    max-height: 85vh;
+    max-width: 60vw;
+  }
+
+  .album-lightbox__default-caption {
+    width: 18rem;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .album-lightbox__default-caption {
+    width: 20rem;
+  }
+}
+
+/* Polaroid lightbox (places drawer) */
+.album-lightbox__polaroid {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  max-width: min(96vw, 1200px);
+  max-height: 92vh;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.22);
+  cursor: default;
+}
+
+.album-lightbox__polaroid--no-caption {
+  padding-bottom: 0.75rem;
+}
+
+.album-lightbox__polaroid--no-caption .album-lightbox__polaroid-media img {
+  max-height: calc(92vh - 2rem);
+}
+
+.album-lightbox__polaroid-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0.75rem 0.75rem 0;
+  background: #fff;
+}
+
+.album-lightbox__polaroid-media img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(calc(96vw - 1.5rem), 1150px);
+  max-height: calc(92vh - 7.5rem);
+  object-fit: contain;
+}
+
+.album-lightbox__polaroid-caption {
+  flex: 0 1 auto;
+  margin: 0;
+  padding: 1.25rem 1.5rem 2rem;
+  max-height: 28vh;
+  overflow-y: auto;
+  min-height: 3.5rem;
+  text-align: center;
+  font-family: 'Proza Libre', system-ui, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #5c5c5c;
+}
+
 @media (min-width: 640px) {
   .album-lightbox__nav {
     width: 3.25rem;

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import AlbumGallery, { type AlbumGalleryImage } from '../media/AlbumGallery';
 
 export type AlbumDrawerAlbum = {
   id: string;
   title: string;
   intro: string;
-  images: AlbumGalleryImage[];
+  albumFolder: string;
   emptyFolderHint?: string;
 };
 
@@ -13,12 +14,24 @@ type Props = {
   albums: AlbumDrawerAlbum[];
 };
 
+declare global {
+  interface Window {
+    __placesPendingAlbumId?: string;
+  }
+}
+
 export default function AlbumDrawer({ albums }: Props) {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [images, setImages] = useState<AlbumGalleryImage[]>([]);
+  const [portalReady, setPortalReady] = useState(false);
 
   const activeAlbum = openId ? albums.find((a) => a.id === openId) ?? null : null;
 
   const close = useCallback(() => setOpenId(null), []);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   useEffect(() => {
     const onOpen = (e: Event) => {
@@ -26,6 +39,12 @@ export default function AlbumDrawer({ albums }: Props) {
       if (detail?.id) setOpenId(detail.id);
     };
     window.addEventListener('places:open-album', onOpen);
+
+    if (window.__placesPendingAlbumId) {
+      setOpenId(window.__placesPendingAlbumId);
+      delete window.__placesPendingAlbumId;
+    }
+
     return () => window.removeEventListener('places:open-album', onOpen);
   }, []);
 
@@ -42,7 +61,25 @@ export default function AlbumDrawer({ albums }: Props) {
     };
   }, [openId, close]);
 
-  return (
+  useEffect(() => {
+    if (!activeAlbum) {
+      setImages([]);
+      return;
+    }
+
+    let cancelled = false;
+    void import('../../utils/loadAlbum').then(({ getAlbumPhotos }) => {
+      if (!cancelled) {
+        setImages(getAlbumPhotos(activeAlbum.albumFolder));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeAlbum]);
+
+  const drawer = (
     <>
       <div
         className={`places-drawer__backdrop ${openId ? 'places-drawer__backdrop--open' : ''}`}
@@ -71,8 +108,9 @@ export default function AlbumDrawer({ albums }: Props) {
 
             <div className="places-drawer__content">
               <AlbumGallery
-                images={activeAlbum.images}
+                images={images}
                 emptyFolderHint={activeAlbum.emptyFolderHint}
+                lightboxLayout="polaroid"
               />
             </div>
           </>
@@ -80,4 +118,8 @@ export default function AlbumDrawer({ albums }: Props) {
       </aside>
     </>
   );
+
+  if (!portalReady) return null;
+
+  return createPortal(drawer, document.body);
 }

@@ -639,6 +639,11 @@ export default function PortfolioMap({ expandMode = 'fullscreen', embedded = fal
   const albumImages = activePlace
     ? activePlace.photos.map((photo) => ({
         src: photo.src,
+        srcSet: photo.srcSet,
+        sizes: photo.sizes,
+        fullSrc: photo.fullSrc,
+        width: photo.width,
+        height: photo.height,
         alt: photo.caption || activePlace.name,
         ...(photo.caption ? { caption: photo.caption } : {}),
       }))

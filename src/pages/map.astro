@@ -14,7 +14,7 @@ const albums = getLivedAlbumDrawerItems();
     </header>
 
     <PlacesTimeline />
-
-    <AlbumDrawer client:load albums={albums} />
   </div>
+
+  <AlbumDrawer client:only="react" albums={albums} />
 </PlacesLayout>

@@ -4,6 +4,10 @@ import '../../styles/album-gallery.css';
 
 export type AlbumGalleryImage = {
   src: string;
+  /** Responsive srcset for gallery thumbnails. */
+  srcSet?: string;
+  /** Sizes hint paired with srcSet. */
+  sizes?: string;
   /** Optional larger URL for the lightbox; defaults to `src`. */
   fullSrc?: string;
   alt?: string;
@@ -16,12 +20,14 @@ type Props = {
   images: AlbumGalleryImage[];
   emptyFolderHint?: string;
   variant?: 'default' | 'dark';
+  lightboxLayout?: 'default' | 'polaroid';
 };
 
 export default function AlbumGallery({
   images,
   emptyFolderHint = 'src/images/',
   variant = 'default',
+  lightboxLayout = 'default',
 }: Props) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [imageReady, setImageReady] = useState(false);
@@ -116,55 +122,61 @@ export default function AlbumGallery({
     );
   }
 
-  const revealClass = `transition-opacity duration-150 ${imageReady ? 'opacity-100' : 'opacity-0'}`;
+  const revealClass = `album-lightbox__reveal ${imageReady ? 'album-lightbox__reveal--ready' : ''}`;
   const gridClass = isDark
     ? 'album-gallery-grid album-gallery-grid--dark'
     : 'album-gallery-grid';
   const showNav = images.length > 1;
+
+  const lightboxControls = (
+    <>
+      <button
+        type="button"
+        onClick={closeLightbox}
+        className={`album-lightbox__close ${isDark ? 'album-lightbox__close--dark' : ''}`}
+        aria-label="Close"
+      >
+        &times;
+      </button>
+
+      {showNav && (
+        <>
+          <button
+            type="button"
+            className={`album-lightbox__nav album-lightbox__nav--prev ${isDark ? 'album-lightbox__nav--dark' : ''}`}
+            onClick={goPrev}
+            aria-label="Previous photo"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className={`album-lightbox__nav album-lightbox__nav--next ${isDark ? 'album-lightbox__nav--dark' : ''}`}
+            onClick={goNext}
+            aria-label="Next photo"
+          >
+            ›
+          </button>
+        </>
+      )}
+    </>
+  );
 
   const lightbox =
     activeImage && portalReady
       ? createPortal(
           isDark ? (
             <div
-              className="album-lightbox album-lightbox--dark fixed inset-0 z-[20000] flex flex-col items-center justify-center cursor-pointer p-4 sm:p-6"
+              className="album-lightbox album-lightbox--dark"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeLightbox();
               }}
               role="presentation"
             >
-              <button
-                type="button"
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 z-10 text-[#ededed] text-3xl leading-none opacity-70 hover:opacity-100 px-2"
-                aria-label="Close"
-              >
-                &times;
-              </button>
-
-              {showNav && (
-                <>
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--prev album-lightbox__nav--dark"
-                    onClick={goPrev}
-                    aria-label="Previous photo"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--next album-lightbox__nav--dark"
-                    onClick={goNext}
-                    aria-label="Next photo"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
+              {lightboxControls}
 
               <div
-                className="flex flex-col items-center w-full max-w-[min(96vw,1100px)] max-h-[92vh] cursor-default overflow-y-auto"
+                className="album-lightbox__dark-content"
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
@@ -174,63 +186,66 @@ export default function AlbumGallery({
                   alt={activeImage.alt ?? 'Enlarged photo'}
                   aria-describedby={activeCaption && imageReady ? captionId : undefined}
                   onLoad={handleLightboxImageLoad}
-                  className={`max-w-full object-contain rounded shadow-2xl ${revealClass}`}
+                  className={`album-lightbox__dark-image ${revealClass}`}
                   style={{ maxHeight: activeCaption ? '72vh' : '90vh' }}
                 />
                 {activeCaption ? (
-                  <p
-                    id={captionId}
-                    className={`mt-5 mb-2 w-full max-w-[40rem] text-center text-[0.95rem] leading-relaxed text-[#c8c4bc] px-2 ${revealClass}`}
-                  >
+                  <p id={captionId} className={`album-lightbox__dark-caption ${revealClass}`}>
                     {imageReady ? activeCaption : null}
                   </p>
                 ) : null}
               </div>
             </div>
-          ) : (
+          ) : lightboxLayout === 'polaroid' ? (
             <div
-              className="album-lightbox fixed inset-0 z-[20000] flex items-center justify-center bg-black/85 cursor-pointer p-4"
+              className="album-lightbox album-lightbox--polaroid"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeLightbox();
               }}
               role="presentation"
             >
-              <button
-                type="button"
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 z-10 text-white text-3xl leading-none opacity-70 hover:opacity-100 px-2"
-                aria-label="Close"
-              >
-                &times;
-              </button>
+              {lightboxControls}
 
-              {showNav && (
-                <>
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--prev"
-                    onClick={goPrev}
-                    aria-label="Previous photo"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--next"
-                    onClick={goNext}
-                    aria-label="Next photo"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
+              <figure
+                className={`album-lightbox__polaroid ${activeCaption ? '' : 'album-lightbox__polaroid--no-caption'}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="album-lightbox__polaroid-media">
+                  <img
+                    key={activeImageSrc}
+                    ref={lightboxImgRef}
+                    src={activeImageSrc}
+                    alt={activeImage.alt ?? 'Enlarged photo'}
+                    width={activeImage.width}
+                    height={activeImage.height}
+                    aria-describedby={activeCaption && imageReady ? captionId : undefined}
+                    onLoad={handleLightboxImageLoad}
+                    className={revealClass}
+                  />
+                </div>
+                {activeCaption ? (
+                  <figcaption id={captionId} className={`album-lightbox__polaroid-caption ${revealClass}`}>
+                    {imageReady ? activeCaption : null}
+                  </figcaption>
+                ) : null}
+              </figure>
+            </div>
+          ) : (
+            <div
+              className="album-lightbox album-lightbox--default"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) closeLightbox();
+              }}
+              role="presentation"
+            >
+              {lightboxControls}
 
               {activeCaption ? (
                 <div
-                  className="flex flex-col sm:flex-row items-stretch max-w-[min(95vw,1100px)] max-h-[90vh] rounded-lg overflow-hidden shadow-2xl cursor-default"
+                  className="album-lightbox__default-split"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="flex flex-1 min-w-0 items-center justify-center bg-black/40 p-3 sm:p-4">
+                  <div className="album-lightbox__default-media">
                     <img
                       key={activeImageSrc}
                       ref={lightboxImgRef}
@@ -238,13 +253,10 @@ export default function AlbumGallery({
                       alt={activeImage.alt ?? 'Enlarged photo'}
                       aria-describedby={imageReady ? captionId : undefined}
                       onLoad={handleLightboxImageLoad}
-                      className={`max-h-[50vh] sm:max-h-[85vh] max-w-full sm:max-w-[60vw] object-contain ${revealClass}`}
+                      className={revealClass}
                     />
                   </div>
-                  <div
-                    id={captionId}
-                    className={`w-full sm:w-72 lg:w-80 shrink-0 overflow-y-auto bg-[#fffdf8] text-[#3d4f3a] p-4 sm:p-5 text-sm leading-relaxed ${revealClass}`}
-                  >
+                  <div id={captionId} className={`album-lightbox__default-caption ${revealClass}`}>
                     {imageReady ? activeCaption : null}
                   </div>
                 </div>
@@ -255,7 +267,7 @@ export default function AlbumGallery({
                   src={activeImageSrc}
                   alt={activeImage.alt ?? 'Enlarged photo'}
                   onLoad={handleLightboxImageLoad}
-                  className={`max-w-[90vw] max-h-[90vh] object-contain rounded shadow-2xl ${revealClass}`}
+                  className={`album-lightbox__default-image ${revealClass}`}
                   onClick={(e) => e.stopPropagation()}
                 />
               )}
@@ -277,6 +289,8 @@ export default function AlbumGallery({
           >
             <img
               src={img.src}
+              srcSet={img.srcSet}
+              sizes={img.sizes}
               alt={img.alt ?? 'Photo'}
               width={img.width}
               height={img.height}

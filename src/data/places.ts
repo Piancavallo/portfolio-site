@@ -1,15 +1,6 @@
-import { albumPhotoCaptions } from './albumPhotoCaptions';
+import { getAlbumPhotos, getPlaceAlbumFolder, type PlacePhoto } from '../utils/loadAlbum';
 
-const allAlbumImages = import.meta.glob('/src/images/albums/*/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-}) as Record<string, string>;
-
-export type PlacePhoto = {
-  src: string;
-  caption: string;
-};
+export type { PlacePhoto };
 
 export type PlaceEntry = {
   id: string;
@@ -41,26 +32,6 @@ export type TimelineEntry = {
 };
 
 export type MapPlace = PlaceEntry;
-
-export function getAlbumPhotos(albumName: string): PlacePhoto[] {
-  const captionsForAlbum = albumPhotoCaptions[albumName] ?? {};
-  return Object.entries(allAlbumImages)
-    .filter(([path]) => path.includes(`/src/images/albums/${albumName}/`))
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([path, url]) => {
-      const filename = path.split('/').pop() ?? '';
-      const stem = filename.replace(/\.[^.]+$/, '');
-      const caption =
-        captionsForAlbum[filename] ??
-        captionsForAlbum[`${stem}.HEIC`] ??
-        captionsForAlbum[`${stem}.heic`] ??
-        '';
-      return {
-        src: url,
-        caption,
-      };
-    });
-}
 
 export function extractYearRange(years?: string) {
   if (!years) return { startYear: null as number | null, endYear: null as number | null };
@@ -505,28 +476,34 @@ export type AlbumDrawerItem = {
   id: string;
   title: string;
   intro: string;
-  images: PlacePhoto[];
+  albumFolder: string;
   emptyFolderHint: string;
 };
 
 export function getAlbumDrawerItems(): AlbumDrawerItem[] {
-  return getTimelineEntries().map((entry) => ({
-    id: getTimelineEntryKey(entry),
-    title: entry.place.title,
-    intro: entry.place.narrative,
-    images: entry.place.photos,
-    emptyFolderHint: `src/images/albums/${entry.place.id}/`,
-  }));
+  return getTimelineEntries().map((entry) => {
+    const albumFolder = getPlaceAlbumFolder(entry.place.id);
+    return {
+      id: getTimelineEntryKey(entry),
+      title: entry.place.title,
+      intro: entry.place.narrative,
+      albumFolder,
+      emptyFolderHint: `src/images/albums/${albumFolder}/`,
+    };
+  });
 }
 
 export function getLivedAlbumDrawerItems(): AlbumDrawerItem[] {
-  return getLivedTimelineEntries().map((entry) => ({
-    id: getTimelineEntryKey(entry),
-    title: entry.place.title,
-    intro: entry.place.narrative,
-    images: entry.place.photos,
-    emptyFolderHint: `src/images/albums/${entry.place.id}/`,
-  }));
+  return getLivedTimelineEntries().map((entry) => {
+    const albumFolder = getPlaceAlbumFolder(entry.place.id);
+    return {
+      id: getTimelineEntryKey(entry),
+      title: entry.place.title,
+      intro: entry.place.narrative,
+      albumFolder,
+      emptyFolderHint: `src/images/albums/${albumFolder}/`,
+    };
+  });
 }
 
 export const ME = {
